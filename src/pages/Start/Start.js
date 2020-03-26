@@ -35,11 +35,12 @@ export const Start = () => {
   }
 
   const onClickRandom = () => {
-    dispatch(
-      setGameModeAction(
-        `https://api.unsplash.com/photos/random?client_id=KdhCvP8tXfN1Byw49YkwKeDjHe5oa8fpZS2YGgmTYIM&count=${numberOfImg}`
-      )
-    )
+    // dispatch(
+    //   setGameModeAction(
+    //     `https://api.unsplash.com/photos/random?client_id=KdhCvP8tXfN1Byw49YkwKeDjHe5oa8fpZS2YGgmTYIM&count=${numberOfImg}`
+    //   ))
+    dispatch(passGameMode('random'))
+
     dispatch(fetchImages())
     return <Redirect push to="/game" />
   }
