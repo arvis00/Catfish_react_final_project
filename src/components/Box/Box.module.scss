@@ -1,0 +1,36 @@
+.imgListItem {
+  transition: transform 0.33s;
+  transform-style: preserve-3d;
+  .backCard,
+  .frontCard {
+    border: 1px solid rgba(147, 184, 189, 0.8);
+  }
+  .textFront,
+  .textBack {
+    color: #fff;
+    text-align: center;
+    margin: 0;
+  }
+  .backCard {
+    background-color: #2d656e;
+  }
+  .textBack {
+    font-size: 27.2px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 44% 0;
+  }
+  .frontCard {
+    background-color: rgb(23, 68, 116);
+  }
+  .textFront {
+    font-size: 27.2px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 44% 0;
+  }
+}
+.imgListItem:hover {
+  transform: rotateX(90deg);
+  cursor: pointer;
+}

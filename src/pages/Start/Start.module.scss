@@ -1,0 +1,55 @@
+.start {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 300px;
+
+  .startBox {
+    margin: 10px;
+    &.boxTitle {
+      text-decoration: underline #fff double;
+    }
+    &.boxSearch {
+      cursor: default;
+    }
+    .searchForm {
+      padding: 39% 0;
+    }
+  }
+  .boxTitle {
+    pointer-events: none;
+  }
+  .boxSize {
+    .numberOfImgSelect {
+      padding-top: 73px;
+    }
+  }
+}
+.startBtn {
+  margin: 10px;
+  width: 200px;
+}
+.startInput {
+  width: 231px;
+  height: 36px;
+  display: block;
+  font-size: 25px;
+  color: #ff6860;
+  outline: none;
+  border: none;
+}
+.startInput::placeholder {
+  font-size: 15px;
+  color: rgb(205, 203, 203);
+  padding-left: 10px;
+}
+.inputContainer {
+  display: flex;
+  justify-content: center;
+}
+form {
+  text-align: center;
+}
+p {
+  margin: 0 0 10px;
+}
