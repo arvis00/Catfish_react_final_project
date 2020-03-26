@@ -12,7 +12,8 @@ import {
 import {
   setNumberOfImgAction,
   setSearchValueAction,
-  setSecondsToRememberAction
+  setSecondsToRememberAction,
+  setGameModeAction
 } from '../../redux/actionCreators'
 import { passGameMode, passSearchValue, fetchImages } from '../../redux/actions'
 import { Redirect } from 'react-router'
@@ -34,7 +35,11 @@ export const Start = () => {
   }
 
   const onClickRandom = () => {
-    dispatch(passGameMode('random'))
+    dispatch(
+      setGameModeAction(
+        `https://api.unsplash.com/photos/random?client_id=KdhCvP8tXfN1Byw49YkwKeDjHe5oa8fpZS2YGgmTYIM&count=${numberOfImg}`
+      )
+    )
     dispatch(fetchImages())
     return <Redirect push to="/game" />
   }
@@ -63,7 +68,6 @@ export const Start = () => {
       <div className={classes.start}>
         <Box
           className={`${classes.startBox} ${classes.boxTitle}`}
-          // className={[classes.startBox, classes.boxTitle].join(' ')}
           size="300"
           textFront="catfish"
         ></Box>

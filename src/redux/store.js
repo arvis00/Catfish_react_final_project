@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import reducerDataFetched from './reducer-dataFetched'
 import reducerGameMode from './reducer-gameMode'
 import reducerNumberOfImg from './reducer-numberOfImg'
@@ -10,6 +10,7 @@ import reducerTimePassedAfterStart from './reducer-timePassedAfterStart'
 import reducerTimerInterval from './reducer-timerInterval'
 import reducerToGuessImgArray from './reducer-toGuessImgArray'
 import reducerToRememberImgArray from './reducer-toRememberImgArray'
+import thunk from 'redux-thunk'
 
 const rootReducer = combineReducers({
   dataFetched: reducerDataFetched,
@@ -25,6 +26,6 @@ const rootReducer = combineReducers({
   toRememberImgArray: reducerToRememberImgArray
 })
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
 export default store

@@ -7,7 +7,7 @@ import {
 } from '../../redux/selectors'
 import { useSelector } from 'react-redux'
 
-export const Timer = () => {
+export const Timer = className => {
   const secondsToRemember = useSelector(getSecondsToRemember)
   const timePassedAfterStart = useSelector(getTimePassedAfterStart)
   const FULL_DASH_ARRAY = 283
@@ -70,7 +70,7 @@ export const Timer = () => {
 
   return (
     <div>
-      <div className={classes.baseTimer}>
+      <div className={`${classes.baseTimer} ${className}`}>
         <svg
           className={classes.baseTimer__svg}
           viewBox="0 0 100 100"

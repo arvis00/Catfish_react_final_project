@@ -11,15 +11,16 @@ export const Box = ({
   textFront,
   BgColorBack,
   fontSizeBack,
-  textBack
+  textBack,
+  className,
+  onClick
 }) => {
-  const clickOnBox = event => {
-    event.click()
-  }
-
   return (
     <>
-      <div className={classes.imgListItem} style={{ height: size + 'px' }}>
+      <div
+        className={`${classes.imgListItem} ${className}`}
+        style={{ height: size + 'px' }}
+      >
         <div
           className={classes.backCard}
           style={{
@@ -46,7 +47,7 @@ export const Box = ({
             backgroundColor: BgColorBack,
             fontSize: fontSizeBack
           }}
-          onClick={clickOnBox}
+          onClick={onClick}
         >
           <p
             className={classes.textBack}

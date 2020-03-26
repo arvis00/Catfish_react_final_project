@@ -1,10 +1,23 @@
 import React from 'react'
 import classes from './Slider.module.scss'
 
-export const Slider = ({ children, padding, value, range, min, max, step }) => {
+export const Slider = ({
+  children,
+  padding,
+  value,
+  range,
+  min,
+  max,
+  step,
+  className,
+  onInput
+}) => {
   return (
     <div>
-      <div className={classes.slideContainer} style={{ padding: padding }}>
+      <div
+        className={`${classes.slideContainer} ${className}`}
+        style={{ padding: padding }}
+      >
         <input
           type={range}
           min={min}
@@ -12,6 +25,7 @@ export const Slider = ({ children, padding, value, range, min, max, step }) => {
           step={step}
           className={classes.slider}
           value={value}
+          onInput={onInput}
         />
         <p>
           {children} {value}
