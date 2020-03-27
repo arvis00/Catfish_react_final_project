@@ -16,13 +16,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
-  setSizeOfImgAction
+  setSizeOfImgAction,
+  setDataFetchedAction
 } from '../../redux/actionCreators'
 import {
   stopTimer,
   startTimerAfterStart,
   startTimerAfterFlip
 } from '../../redux/actions'
+import { useHistory } from 'react-router-dom'
 
 export const Game = () => {
   const [imageIndex, setImageIndex] = useState(0)
@@ -42,9 +44,16 @@ export const Game = () => {
   const numberOfImg = useSelector(getNumberOfImg)
   const dataFetched = useSelector(getDataFetched)
 
+  const history = useHistory()
   const dispatch = useDispatch()
 
-  const imageToGuessDisplayed = () => toGuessImgArray[imageIndex]
+  const imageToGuessDisplayed = () => {
+    console.log(toGuessImgArray[imageIndex])
+
+    return toGuessImgArray[imageIndex]
+  }
+
+  const makeTwoDigitTimer = n => (n < 10 ? '0' : '') + n
 
   const changeTimeFormat = () => {
     const minutes = Math.floor(timePassedAfterFlip / 60)
@@ -52,7 +61,7 @@ export const Game = () => {
     return `${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`
   }
 
-  const makeTwoDigitTimer = n => (n < 10 ? '0' : '') + n
+  // const text = changeTimeFormat()
 
   const nextImage = () => {
     if (tempResult === 2) {
@@ -121,7 +130,7 @@ export const Game = () => {
   const clearValues = () => {
     if (tempResult === 2) {
       const updatedGuessArray = toGuessImgArray.map(storedImage => {
-        if (storedImage.id === imageToGuessDisplayed.id) {
+        if (storedImage.id === imageToGuessDisplayed().id) {
           return {
             ...storedImage,
             hidden: true
@@ -154,7 +163,7 @@ export const Game = () => {
       dispatch(setToRememberImgArrayAction(tempArray))
     } else {
       // flipIncorrectCardsTemp();
-      const copyItemsForMutating = [...itemsForMutating]
+      const copyItemsForMutating = { ...itemsForMutating }
       copyItemsForMutating.condition = ['selected', true]
       copyItemsForMutating.change = ['guessed']
       setItemsForMutating(copyItemsForMutating)
@@ -215,13 +224,16 @@ export const Game = () => {
     setGameLives(gameLives >= 0 && gameLives - 1)
     if (gameLives < 0) {
       dispatch(stopTimer())
-      return <Redirect push to="/gameover" />
+      history.push('/gameover')
     }
   }
 
   const checkSelection = () => {
     toRememberImgArray.forEach(storedImage => {
-      if (storedImage.selected && storedImage.id === imageToGuessDisplayed.id) {
+      if (
+        storedImage.selected &&
+        storedImage.id === imageToGuessDisplayed().id
+      ) {
         setTempResult(prev => prev + 1)
       }
     })
@@ -252,6 +264,21 @@ export const Game = () => {
   }
 
   useEffect(() => {
+    if (localStorage.getItem('toRememberImg')) {
+      const data = JSON.parse(localStorage.getItem('toRememberImg'))
+      dispatch(setToRememberImgArrayAction(data))
+      const result = JSON.parse(localStorage.getItem('toGuessImg')).map(
+        storedImage => {
+          return {
+            ...storedImage,
+            hidden: false
+          }
+        }
+      )
+      dispatch(setToGuessImgArrayAction(result))
+      setDataFetchedAction(true)
+    }
+
     setTempResult(0)
     setSelectionCounter(0)
     setTotalResult(0)
@@ -262,8 +289,8 @@ export const Game = () => {
 
   useEffect(() => {
     if (toRememberImgArray.length === totalResult) {
-      dispatch(stopTimer())
-      return <Redirect push to="/results" />
+      dispatch(stopTimer)
+      history.push('/results')
     }
   }, [totalResult])
 
@@ -278,12 +305,12 @@ export const Game = () => {
             step="1"
             value={sizeOfImg}
             padding="0 10px"
-            onInput={event => dispatch(setSizeOfImgAction(event.target.value))}
+            onChange={event => dispatch(setSizeOfImgAction(event.target.value))}
           >
             Change size of cards:
           </Slider>
           <div className={classes.timePassedTimer}>
-            <div>{changeTimeFormat}</div>
+            <div>{changeTimeFormat()}</div>
           </div>
           <div className={classes.lives}>
             <p>Tries left</p>
@@ -303,7 +330,7 @@ export const Game = () => {
                     !image.guessed &&
                     classes.imgListItemFlip} ${!flipCards ||
                         (image.guessed && classes.pointerEvent)}`}
-                      onClick={selectAnswer(image, index)}
+                      onClick={() => selectAnswer(image, index)}
                     >
                       <div
                         className={classes.backCard}
@@ -361,7 +388,9 @@ export const Game = () => {
                 <img
                   className={`${flipCards && classes.showImg} ${!flipCards &&
                     classes.hideImg}`}
-                  src={imageToGuessDisplayed.urls.raw + '&fit=crop&w=200&h=200'}
+                  src={
+                    imageToGuessDisplayed().urls.raw + '&fit=crop&w=200&h=200'
+                  }
                   alt=""
                 />
               </div>

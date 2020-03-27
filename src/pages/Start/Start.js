@@ -17,11 +17,13 @@ import {
 } from '../../redux/actionCreators'
 import { passGameMode, passSearchValue, fetchImages } from '../../redux/actions'
 import { Redirect } from 'react-router'
+import { getRandomPhotos, getSearchedPhotos } from '../../api'
+import { useHistory } from 'react-router-dom'
 
 export const Start = () => {
   const dispatch = useDispatch()
-
-  const [value, setValue] = useState(null)
+  const history = useHistory()
+  const [value, setValue] = useState('')
   const [gameModeStr, setGameModeStr] = useState('random')
   const [errorMsg, setErrorMsg] = useState(false)
 
@@ -34,25 +36,30 @@ export const Start = () => {
     dispatch(passSearchValue(value))
   }
 
-  const onClickRandom = () => {
+  const onClickRandom = async () => {
     // dispatch(
     //   setGameModeAction(
     //     `https://api.unsplash.com/photos/random?client_id=KdhCvP8tXfN1Byw49YkwKeDjHe5oa8fpZS2YGgmTYIM&count=${numberOfImg}`
     //   ))
-    dispatch(passGameMode('random'))
+    // dispatch(passGameMode('random'))
 
-    dispatch(fetchImages())
-    return <Redirect push to="/game" />
+    const data = await getRandomPhotos(numberOfImg)
+    console.log(data)
+
+    dispatch(fetchImages(data))
+    history.push('/game')
+    // return <Redirect push to="/game" />
   }
 
   const onClickSearch = async event => {
     event.preventDefault()
     if (value) {
-      dispatch(passGameMode('search'))
-      const result = await dispatch(fetchImages())
+      const result = getSearchedPhotos(numberOfImg, searchValue)
+      // dispatch(passGameMode('search'))
+      // const result = await dispatch(fetchImages())
       if (result) {
         setErrorMsg(false)
-        return <Redirect push to="/game" />
+        history.push('/game')
       } else {
         setValue(null)
         setErrorMsg(true)
@@ -61,7 +68,7 @@ export const Start = () => {
   }
   useEffect(() => {
     dispatch(setSearchValueAction(null))
-    setGameModeStr('random')
+    // setGameModeStr('random')
   }, [])
 
   return (
@@ -100,7 +107,7 @@ export const Start = () => {
                     ? 'Oops, nothing found. Try again'
                     : 'Search for photos'
                 }
-                onInput={onInput}
+                onChange={onInput}
               />
             </div>
             <Button
@@ -126,7 +133,7 @@ export const Start = () => {
             max="30"
             step="2"
             value={numberOfImg}
-            onInput={event =>
+            onChange={event =>
               dispatch(setNumberOfImgAction(event.target.value))
             }
           >
@@ -138,7 +145,7 @@ export const Start = () => {
             max="60"
             step="1"
             value={secondsToRemember}
-            onInput={event =>
+            onChange={event =>
               dispatch(setSecondsToRememberAction(event.target.value))
             }
           >

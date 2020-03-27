@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 
 export const Timer = className => {
   const secondsToRemember = useSelector(getSecondsToRemember)
-  const timePassedAfterStart = useSelector(getTimePassedAfterStart)
+  const { counter: timePassedAfterStart } = useSelector(getTimePassedAfterStart)
   const FULL_DASH_ARRAY = 283
   const WARNING_THRESHOLD = 5
   const ALERT_THRESHOLD = 3
@@ -30,6 +30,9 @@ export const Timer = className => {
 
   const timeLeft = () => {
     const time = secondsToRemember - timePassedAfterStart
+    console.log('secondsToRemember', secondsToRemember)
+    console.log('timePassedAfterStart', timePassedAfterStart)
+
     if (time === 0) {
       onTimesUp()
     } else {
@@ -43,13 +46,15 @@ export const Timer = className => {
 
   // }, [timeLeft])
 
-  const circleDasharray = () =>
-    `${(timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`
-
   const timeFraction = () => {
     const rawTimeFraction = timeLeft / secondsToRemember
     return rawTimeFraction - (1 / secondsToRemember) * (1 - rawTimeFraction)
   }
+
+  const circleDasharray = () =>
+    `${(timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`
+
+  const text = circleDasharray()
 
   const remainingPathColor = () => {
     const { alert, warning, info } = COLOR_CODES
@@ -84,10 +89,10 @@ export const Timer = className => {
               r="45"
             ></circle>
             <path
-              stroke-dasharray={circleDasharray}
-              className={
-                (classes.baseTimer__path__remaining, remainingPathColor)
-              }
+              strokeDasharray={text}
+              className={`${
+                classes.baseTimer__path__remaining
+              }, ${remainingPathColor()}`}
               d="
             M 50, 50
             m -45, 0
@@ -97,7 +102,7 @@ export const Timer = className => {
             ></path>
           </g>
         </svg>
-        <span className={classes.baseTimer__label}>{timeLeft}</span>
+        <span className={classes.baseTimer__label}>{timeLeft()}</span>
       </div>
     </div>
   )

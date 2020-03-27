@@ -10,7 +10,7 @@ export const Slider = ({
   max,
   step,
   className,
-  onInput
+  onChange
 }) => {
   return (
     <div>
@@ -25,7 +25,7 @@ export const Slider = ({
           step={step}
           className={classes.slider}
           value={value}
-          onInput={onInput}
+          onChange={onChange}
         />
         <p>
           {children} {value}
