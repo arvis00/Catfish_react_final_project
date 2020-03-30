@@ -54,3 +54,7 @@ export const setToRememberImgArrayAction = newData => ({
   type: actionTypes.REPLACE_TO_REMEMBER_IMG_ARRAY,
   newData
 })
+export const setTimerEndAction = newData => ({
+  type: actionTypes.REPLACE_TIMER_END,
+  newData
+})

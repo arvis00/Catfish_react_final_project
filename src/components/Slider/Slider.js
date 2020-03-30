@@ -5,7 +5,6 @@ export const Slider = ({
   children,
   padding,
   value,
-  range,
   min,
   max,
   step,
@@ -13,13 +12,13 @@ export const Slider = ({
   onChange
 }) => {
   return (
-    <div>
+    <>
       <div
         className={`${classes.slideContainer} ${className}`}
         style={{ padding: padding }}
       >
         <input
-          type={range}
+          type="range"
           min={min}
           max={max}
           step={step}
@@ -31,6 +30,6 @@ export const Slider = ({
           {children} {value}
         </p>
       </div>
-    </div>
+    </>
   )
 }

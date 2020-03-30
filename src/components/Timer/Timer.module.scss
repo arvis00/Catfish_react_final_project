@@ -6,7 +6,13 @@
   position: relative;
   width: 100px;
   height: 100px;
-
+  &.showImg {
+    display: block;
+    border-radius: 5px;
+  }
+  &.hideImg {
+    display: none;
+  }
   &__svg {
     transform: scaleX(-1);
   }

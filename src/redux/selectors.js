@@ -9,3 +9,4 @@ export const getToRememberImgArray = state => state.toRememberImgArray
 export const getToGuessImgArray = state => state.toGuessImgArray
 export const getDataFetched = state => state.dataFetched
 export const getSecondsToRemember = state => state.secondsToRemember
+export const getTimerEnd = state => state.timerEnd

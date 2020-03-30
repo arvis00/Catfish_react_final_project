@@ -1,44 +1,68 @@
 import React from 'react'
-import classes from '../Slider/Slider.module.scss'
-import { stopTimer } from '../../redux/actions'
+import classes from './Timer.module.scss'
+// import { stopTimer, startTimerAfterFlip } from '../../redux/actions'
+import { stopTimer, startTimerAfterFlip } from './utils'
 import {
   getSecondsToRemember,
-  getTimePassedAfterStart
+  getTimePassedAfterStart,
+  getTimerEnd
 } from '../../redux/selectors'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setTimerEndAction } from '../../redux/actionCreators'
 
-export const Timer = className => {
+export const Timer = ({ className }) => {
   const secondsToRemember = useSelector(getSecondsToRemember)
   const { counter: timePassedAfterStart } = useSelector(getTimePassedAfterStart)
+  const timerEnd = useSelector(getTimerEnd)
+  const dispatch = useDispatch()
   const FULL_DASH_ARRAY = 283
   const WARNING_THRESHOLD = 5
   const ALERT_THRESHOLD = 3
+  // console.log('hidetimer', className)
 
   const COLOR_CODES = {
     info: {
-      color: 'green'
+      color: '#48a56a'
     },
     warning: {
-      color: 'orange',
+      color: '#d8ad4e',
       threshold: WARNING_THRESHOLD
     },
     alert: {
-      color: 'red',
+      color: '#ff6860',
       threshold: ALERT_THRESHOLD
     }
   }
+  // const timerEndFunction = (data = false) => data
 
-  const timeLeft = () => {
-    const time = secondsToRemember - timePassedAfterStart
-    console.log('secondsToRemember', secondsToRemember)
-    console.log('timePassedAfterStart', timePassedAfterStart)
+  const onTimesUp = () => dispatch => {
+    console.log('ontimesup')
+    stopTimer()
+    dispatch(setTimerEndAction(true))
+    console.log('newTimerEnd', timerEnd)
 
-    if (time === 0) {
-      onTimesUp()
-    } else {
-      return time
+    // setFlipCards(true)
+    // dispatch(startTimerAfterFlip())
+    // $emit("timerEnd")
+  }
+
+  const timeLeft = () => dispatch => {
+    if (!timerEnd) {
+      const time = secondsToRemember - timePassedAfterStart
+      // console.log('secondsToRemember', secondsToRemember)
+      console.log('timePassedAfterStart', timePassedAfterStart)
+
+      if (time === 0) {
+        dispatch(onTimesUp())
+      } else {
+        console.log('time', time)
+
+        return time
+      }
     }
   }
+
+  // const time = timeLeft()
 
   // useEffect(() => {
   //   if (time === 0) {
@@ -46,15 +70,17 @@ export const Timer = className => {
 
   // }, [timeLeft])
 
-  const timeFraction = () => {
-    const rawTimeFraction = timeLeft / secondsToRemember
+  const timeFraction = () => dispatch => {
+    const rawTimeFraction = dispatch(timeLeft()) / secondsToRemember
+    // console.log('timeFraction', dispatch(timeLeft()))
+
     return rawTimeFraction - (1 / secondsToRemember) * (1 - rawTimeFraction)
   }
 
-  const circleDasharray = () =>
-    `${(timeFraction * FULL_DASH_ARRAY).toFixed(0)} 283`
+  const circleDasharray = () => dispatch =>
+    `${(dispatch(timeFraction()) * FULL_DASH_ARRAY).toFixed(0)} 283`
 
-  const text = circleDasharray()
+  // const text = circleDasharray()
 
   const remainingPathColor = () => {
     const { alert, warning, info } = COLOR_CODES
@@ -68,14 +94,13 @@ export const Timer = className => {
     }
   }
 
-  const onTimesUp = () => {
-    stopTimer()
-    // $emit("timerEnd")
-  }
-
   return (
-    <div>
-      <div className={`${classes.baseTimer} ${className}`}>
+    <>
+      <div
+        // className={`${classes.baseTimer} ${className}`}
+        // className={`${classes.baseTimer} ${hideTimer} ${showTimer}`}
+        className={`${classes.baseTimer} ${className}`}
+      >
         <svg
           className={classes.baseTimer__svg}
           viewBox="0 0 100 100"
@@ -89,10 +114,9 @@ export const Timer = className => {
               r="45"
             ></circle>
             <path
-              strokeDasharray={text}
-              className={`${
-                classes.baseTimer__path__remaining
-              }, ${remainingPathColor()}`}
+              strokeDasharray={dispatch(circleDasharray())}
+              className={`${classes.baseTimer__path__remaining}`}
+              style={{ color: remainingPathColor() }} //BUG color not changing
               d="
             M 50, 50
             m -45, 0
@@ -102,8 +126,8 @@ export const Timer = className => {
             ></path>
           </g>
         </svg>
-        <span className={classes.baseTimer__label}>{timeLeft()}</span>
+        <span className={classes.baseTimer__label}>{dispatch(timeLeft())}</span>
       </div>
-    </div>
+    </>
   )
 }

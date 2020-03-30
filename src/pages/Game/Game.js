@@ -10,7 +10,8 @@ import {
   getToRememberImgArray,
   getSizeOfImg,
   getNumberOfImg,
-  getDataFetched
+  getDataFetched,
+  getTimerEnd
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -19,11 +20,16 @@ import {
   setSizeOfImgAction,
   setDataFetchedAction
 } from '../../redux/actionCreators'
+// import {
+//   stopTimer,
+//   startTimerAfterStart,
+//   startTimerAfterFlip
+// } from '../../redux/actions'
 import {
   stopTimer,
   startTimerAfterStart,
   startTimerAfterFlip
-} from '../../redux/actions'
+} from '../../components/Timer/utils'
 import { useHistory } from 'react-router-dom'
 
 export const Game = () => {
@@ -37,19 +43,19 @@ export const Game = () => {
     condition: [],
     change: []
   })
+
   const toGuessImgArray = useSelector(getToGuessImgArray)
-  const timePassedAfterFlip = useSelector(getTimePassedAfterFlip)
+  const { counter: timePassedAfterFlip } = useSelector(getTimePassedAfterFlip)
   const toRememberImgArray = useSelector(getToRememberImgArray)
   const sizeOfImg = useSelector(getSizeOfImg)
   const numberOfImg = useSelector(getNumberOfImg)
   const dataFetched = useSelector(getDataFetched)
+  const timerEnd = useSelector(getTimerEnd)
 
   const history = useHistory()
   const dispatch = useDispatch()
 
   const imageToGuessDisplayed = () => {
-    console.log(toGuessImgArray[imageIndex])
-
     return toGuessImgArray[imageIndex]
   }
 
@@ -57,15 +63,19 @@ export const Game = () => {
 
   const changeTimeFormat = () => {
     const minutes = Math.floor(timePassedAfterFlip / 60)
+    // console.log('timePassedAfterFlip', timePassedAfterFlip)
+
     const seconds = timePassedAfterFlip % 60
     return `${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`
   }
 
   // const text = changeTimeFormat()
 
-  const nextImage = () => {
+  const nextImage = tempResult => {
     if (tempResult === 2) {
-      clearValues()
+      console.log('nextImage run')
+
+      clearValues(2)
     } else {
       setSelectionCounter(0)
       const tempArray = toRememberImgArray.map(storedImage => {
@@ -127,7 +137,7 @@ export const Game = () => {
     dispatch(setToRememberImgArrayAction(updatedArray))
   }
 
-  const clearValues = () => {
+  const clearValues = tempResult => {
     if (tempResult === 2) {
       const updatedGuessArray = toGuessImgArray.map(storedImage => {
         if (storedImage.id === imageToGuessDisplayed().id) {
@@ -139,6 +149,8 @@ export const Game = () => {
         return storedImage
       })
       dispatch(setToGuessImgArrayAction(updatedGuessArray))
+      console.log('toGuessImgArray', toGuessImgArray)
+
       const updatedRemArray = toRememberImgArray.map(storedImage => {
         if (storedImage.selected === true) {
           return {
@@ -147,22 +159,29 @@ export const Game = () => {
             selected: false
           }
         }
-        return storedImage
-      })
-      dispatch(setToRememberImgArrayAction(updatedRemArray))
-      console.log(toRememberImgArray)
-      setTotalResult(prev => prev + 2)
-      setTempResult(0)
-      setSelectionCounter(0)
-      const tempArray = toRememberImgArray.map(storedImage => {
         return {
           ...storedImage,
           selected: false
         }
       })
-      dispatch(setToRememberImgArrayAction(tempArray))
+      console.log('updatedRemArray', updatedRemArray)
+
+      dispatch(setToRememberImgArrayAction(updatedRemArray))
+      console.log('toRememberImgArray', toRememberImgArray) //BUG array is not updated with guessed:true
+      setTotalResult(prev => prev + 2)
+      setTempResult(0)
+      setSelectionCounter(0)
+      // const tempArray = toRememberImgArray.map(storedImage => {
+      //   return {
+      //     ...storedImage,
+      //     selected: false
+      //   }
+      // })
+      // dispatch(setToRememberImgArrayAction(tempArray))
     } else {
       // flipIncorrectCardsTemp();
+      console.log('incorrect selection run')
+
       const copyItemsForMutating = { ...itemsForMutating }
       copyItemsForMutating.condition = ['selected', true]
       copyItemsForMutating.change = ['guessed']
@@ -180,11 +199,16 @@ export const Game = () => {
             selected: false
           }
         })
+        console.log('tempArray', tempArray)
+
         dispatch(setToRememberImgArrayAction(tempArray))
+        console.log('timeout run')
       }, 600)
     }
   }
+  //   useEffect(() => {
 
+  // }, [toRememberImgArray])
   // flipIncorrectCardsTemp () {
   //   console.log("timeout")
 
@@ -220,24 +244,34 @@ export const Game = () => {
   }
 
   const failedAttempt = () => {
+    console.log('failedattempt run')
+
     clearValues()
-    setGameLives(gameLives >= 0 && gameLives - 1)
-    if (gameLives < 0) {
-      dispatch(stopTimer())
-      history.push('/gameover')
+    if (gameLives >= 0) {
+      setGameLives(gameLives => gameLives - 1)
     }
+    // if (gameLives < 0) {
+    //   console.log('run gameover')
+
+    //   dispatch(stopTimer)
+    //   history.push('/gameover')
+    // }
   }
 
   const checkSelection = () => {
+    console.log('toRememberImgArray', toRememberImgArray)
+    let result = 0
     toRememberImgArray.forEach(storedImage => {
       if (
         storedImage.selected &&
         storedImage.id === imageToGuessDisplayed().id
       ) {
-        setTempResult(prev => prev + 1)
+        console.log('updating tempResult')
+        result += 1
+        setTempResult(tempResult => tempResult + 1)
       }
     })
-    tempResult === 2 ? nextImage() : failedAttempt()
+    result === 2 ? nextImage(2) : failedAttempt()
   }
 
   const resetGame = () => {
@@ -249,7 +283,11 @@ export const Game = () => {
         guessed: false
       }
     })
+    console.log('tempArray', tempArray)
+
     dispatch(setToRememberImgArrayAction(tempArray))
+    console.log('toRememberImgArray', toRememberImgArray)
+
     const updatedGuessArray = toGuessImgArray.map(storedImage => {
       return {
         ...storedImage,
@@ -258,27 +296,22 @@ export const Game = () => {
     })
     dispatch(setToGuessImgArrayAction(updatedGuessArray))
     setGameLives(3)
-    setFlipCards(false)
+    setFlipCards(false) //BUG setting is late
+    console.log('flipcards', flipCards)
+
     setTotalResult(0)
     dispatch(startTimerAfterStart())
   }
+  useEffect(() => {
+    console.log('tempresult', tempResult)
+    // tempResult === 2 ? nextImage() : failedAttempt() //BUG failedAttempt does not run
+  }, [tempResult])
 
   useEffect(() => {
-    if (localStorage.getItem('toRememberImg')) {
-      const data = JSON.parse(localStorage.getItem('toRememberImg'))
-      dispatch(setToRememberImgArrayAction(data))
-      const result = JSON.parse(localStorage.getItem('toGuessImg')).map(
-        storedImage => {
-          return {
-            ...storedImage,
-            hidden: false
-          }
-        }
-      )
-      dispatch(setToGuessImgArrayAction(result))
-      setDataFetchedAction(true)
-    }
+    console.log('flipCards', flipCards)
+  }, [flipCards])
 
+  useEffect(() => {
     setTempResult(0)
     setSelectionCounter(0)
     setTotalResult(0)
@@ -287,6 +320,10 @@ export const Game = () => {
     dispatch(startTimerAfterStart())
   }, [])
 
+  // useEffect(() => {
+  //   console.log('toRememberImgArray', toRememberImgArray)
+  // }, [toRememberImgArray])
+
   useEffect(() => {
     if (toRememberImgArray.length === totalResult) {
       dispatch(stopTimer)
@@ -294,8 +331,27 @@ export const Game = () => {
     }
   }, [totalResult])
 
+  useEffect(() => {
+    if (gameLives < 0) {
+      console.log('run gameover')
+
+      dispatch(stopTimer)
+      history.push('/gameover')
+    }
+  }, [gameLives])
+
+  useEffect(() => {
+    console.log('timerEnd', timerEnd)
+
+    if (timerEnd) {
+      console.log('timerEnd')
+
+      setFlipCards(true)
+      dispatch(startTimerAfterFlip())
+    }
+  }, [timerEnd])
   return (
-    <div>
+    <>
       <div className={classes.game}>
         <div className={classes.header}>
           <Slider
@@ -326,10 +382,9 @@ export const Game = () => {
                     <div
                       style={{ height: sizeOfImg + 'px' }}
                       className={`${classes.imgListItem}
-                  ${flipCards &&
-                    !image.guessed &&
-                    classes.imgListItemFlip} ${!flipCards ||
-                        (image.guessed && classes.pointerEvent)}`}
+                  ${
+                    flipCards && !image.guessed ? classes.imgListItemFlip : ''
+                  } ${!flipCards || image.guessed ? classes.pointerEvent : ''}`}
                       onClick={() => selectAnswer(image, index)}
                     >
                       <div
@@ -377,12 +432,16 @@ export const Game = () => {
               <div className={classes.taskImgContainer}>
                 <div style={{ height: 200 + 'px' }}>
                   <Timer
-                    className={`${classes.timerGame} ${flipCards &&
-                      classes.hideImg} ${!flipCards && classes.showImg}`}
-                    timerEnd={() => {
-                      setFlipCards(true)
-                      dispatch(startTimerAfterFlip())
-                    }}
+                    className={`${flipCards && classes.hideImg} ${!flipCards &&
+                      classes.showImg}`}
+                    // hideTimer={flipCards ? 'hideImg' : ''}
+                    // showTimer={!flipCards ? 'showImg' : ''}
+                    // timerend={event => {
+                    //   if (event) {
+                    //     setFlipCards(true)
+                    //     dispatch(startTimerAfterFlip())
+                    //   }
+                    // }}
                   />
                 </div>
                 <img
@@ -419,16 +478,14 @@ export const Game = () => {
                 <Button className={classes.bottomBtn} onClick={resetGame}>
                   RESET GAME
                 </Button>
-                <BrowserRouter>
-                  <Link to="/" className={classes.homeLink}>
-                    <Button className={classes.bottomBtn}>HOME</Button>
-                  </Link>
-                </BrowserRouter>
+                <Link to="/" className={classes.homeLink}>
+                  <Button className={classes.bottomBtn}>HOME</Button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

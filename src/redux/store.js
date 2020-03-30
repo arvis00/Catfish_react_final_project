@@ -10,6 +10,7 @@ import reducerTimePassedAfterStart from './reducer-timePassedAfterStart'
 import reducerTimerInterval from './reducer-timerInterval'
 import reducerToGuessImgArray from './reducer-toGuessImgArray'
 import reducerToRememberImgArray from './reducer-toRememberImgArray'
+import reducerTimerEnd from './reducer-timerEnd'
 import thunk from 'redux-thunk'
 
 const rootReducer = combineReducers({
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   timePassedAfterStart: reducerTimePassedAfterStart,
   startTimer: reducerTimerInterval,
   toGuessImgArray: reducerToGuessImgArray,
-  toRememberImgArray: reducerToRememberImgArray
+  toRememberImgArray: reducerToRememberImgArray,
+  timerEnd: reducerTimerEnd
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
