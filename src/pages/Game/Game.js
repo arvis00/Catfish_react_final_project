@@ -18,7 +18,8 @@ import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
   setSizeOfImgAction,
-  setDataFetchedAction
+  setDataFetchedAction,
+  setTimerEndAction
 } from '../../redux/actionCreators'
 // import {
 //   stopTimer,
@@ -276,6 +277,7 @@ export const Game = () => {
 
   const resetGame = firstRender => {
     clearValues()
+    dispatch(setTimerEndAction(false))
     const tempArray = toRememberImgArray.map(storedImage => {
       return {
         ...storedImage,
@@ -479,7 +481,10 @@ export const Game = () => {
                 )}
               </div>
               <div className={classes.otherBtnContainer}>
-                <Button className={classes.bottomBtn} onClick={resetGame}>
+                <Button
+                  className={classes.bottomBtn}
+                  onClick={() => resetGame(false)}
+                >
                   RESET GAME
                 </Button>
                 <Link to="/" className={classes.homeLink}>
