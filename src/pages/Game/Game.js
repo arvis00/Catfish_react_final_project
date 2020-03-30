@@ -274,9 +274,8 @@ export const Game = () => {
     result === 2 ? nextImage(2) : failedAttempt()
   }
 
-  const resetGame = () => {
+  const resetGame = firstRender => {
     clearValues()
-    setImageIndex(0)
     const tempArray = toRememberImgArray.map(storedImage => {
       return {
         ...storedImage,
@@ -299,9 +298,23 @@ export const Game = () => {
     setFlipCards(false) //BUG setting is late
     console.log('flipcards', flipCards)
 
-    setTotalResult(0)
-    dispatch(startTimerAfterStart())
+    if (!firstRender) {
+      setTotalResult(0)
+      setImageIndex(0)
+      dispatch(startTimerAfterStart())
+    }
   }
+
+  useEffect(() => {
+    console.log('first useEffect')
+    setTempResult(0)
+    setSelectionCounter(0)
+    setTotalResult(0)
+    setImageIndex(0)
+    resetGame(true)
+    dispatch(startTimerAfterStart())
+  }, [])
+
   useEffect(() => {
     console.log('tempresult', tempResult)
     // tempResult === 2 ? nextImage() : failedAttempt() //BUG failedAttempt does not run
@@ -310,15 +323,6 @@ export const Game = () => {
   useEffect(() => {
     console.log('flipCards', flipCards)
   }, [flipCards])
-
-  useEffect(() => {
-    setTempResult(0)
-    setSelectionCounter(0)
-    setTotalResult(0)
-    setImageIndex(0)
-    resetGame()
-    dispatch(startTimerAfterStart())
-  }, [])
 
   // useEffect(() => {
   //   console.log('toRememberImgArray', toRememberImgArray)
