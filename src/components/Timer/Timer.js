@@ -1,7 +1,5 @@
 import React from 'react'
 import classes from './Timer.module.scss'
-// import { stopTimer, startTimerAfterFlip } from '../../redux/actions'
-import { stopTimer, startTimerAfterFlip } from './utils'
 import {
   getSecondsToRemember,
   getTimePassedAfterStart,
@@ -9,6 +7,7 @@ import {
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import { setTimerEndAction } from '../../redux/actionCreators'
+import { stopTimer } from '../../redux/actions'
 
 export const Timer = ({ className }) => {
   const secondsToRemember = useSelector(getSecondsToRemember)
@@ -18,7 +17,6 @@ export const Timer = ({ className }) => {
   const FULL_DASH_ARRAY = 283
   const WARNING_THRESHOLD = 5
   const ALERT_THRESHOLD = 3
-  // console.log('hidetimer', className)
 
   const COLOR_CODES = {
     info: {
@@ -33,30 +31,18 @@ export const Timer = ({ className }) => {
       threshold: ALERT_THRESHOLD
     }
   }
-  // const timerEndFunction = (data = false) => data
 
   const onTimesUp = () => dispatch => {
-    console.log('ontimesup')
     stopTimer()
     dispatch(setTimerEndAction(true))
-    console.log('newTimerEnd', timerEnd)
-
-    // setFlipCards(true)
-    // dispatch(c())
-    // $emit("timerEnd")
   }
 
   const timeLeft = () => {
     if (!timerEnd) {
       const time = secondsToRemember - timePassedAfterStart
-      // console.log('secondsToRemember', secondsToRemember)
-      console.log('timePassedAfterStart', timePassedAfterStart)
-
       if (time === 0) {
         dispatch(onTimesUp())
       } else {
-        console.log('time', time)
-
         return time
       }
     }
@@ -72,10 +58,9 @@ export const Timer = ({ className }) => {
 
   const remainingPathColor = () => {
     const { alert, warning, info } = COLOR_CODES
-
-    if (timeLeft <= alert.threshold) {
+    if (timeLeft() <= alert.threshold) {
       return alert.color
-    } else if (timeLeft <= warning.threshold) {
+    } else if (timeLeft() <= warning.threshold) {
       return warning.color
     } else {
       return info.color
@@ -100,7 +85,7 @@ export const Timer = ({ className }) => {
             <path
               strokeDasharray={circleDasharray()}
               className={`${classes.baseTimer__path__remaining}`}
-              style={{ color: remainingPathColor() }} //BUG color not changing
+              style={{ color: remainingPathColor() }}
               d="
             M 50, 50
             m -45, 0

@@ -1,11 +1,17 @@
 import React from 'react'
 import classes from './Gameover.module.scss'
 import { Button } from '../../components/Button/Button'
-import { BrowserRouter, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { fetchImages } from '../../redux/actions'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { setTimerEndAction } from '../../redux/actionCreators'
 
 export const Gameover = () => {
-  //BUG Try Again button does not work
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(setTimerEndAction(false))
+  }, [])
   return (
     <>
       <div className={classes.gameover}>

@@ -3,7 +3,7 @@ import classes from './Game.module.scss'
 import { Slider } from '../../components/Slider/Slider'
 import { Timer } from '../../components/Timer/Timer'
 import { Button } from '../../components/Button/Button'
-import { BrowserRouter, Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   getToGuessImgArray,
   getTimePassedAfterFlip,
@@ -18,20 +18,14 @@ import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
   setSizeOfImgAction,
-  setDataFetchedAction,
   setTimerEndAction
 } from '../../redux/actionCreators'
-// import {
-//   stopTimer,
-//   startTimerAfterStart,
-//   startTimerAfterFlip
-// } from '../../redux/actions'
-import {
-  stopTimer,
-  startTimerAfterStart,
-  startTimerAfterFlip
-} from '../../components/Timer/utils'
 import { useHistory } from 'react-router-dom'
+import {
+  startTimerAfterStart,
+  startTimerAfterFlip,
+  stopTimer
+} from '../../redux/actions'
 
 export const Game = () => {
   const [imageIndex, setImageIndex] = useState(0)
@@ -40,10 +34,6 @@ export const Game = () => {
   const [totalResult, setTotalResult] = useState(0)
   const [flipCards, setFlipCards] = useState(false)
   const [gameLives, setGameLives] = useState(3)
-  const [itemsForMutating, setItemsForMutating] = useState({
-    condition: [],
-    change: []
-  })
 
   const toGuessImgArray = useSelector(getToGuessImgArray)
   const { counter: timePassedAfterFlip } = useSelector(getTimePassedAfterFlip)
@@ -54,6 +44,7 @@ export const Game = () => {
   const timerEnd = useSelector(getTimerEnd)
 
   const history = useHistory()
+
   const dispatch = useDispatch()
 
   const imageToGuessDisplayed = () => {
@@ -64,18 +55,12 @@ export const Game = () => {
 
   const changeTimeFormat = () => {
     const minutes = Math.floor(timePassedAfterFlip / 60)
-    // console.log('timePassedAfterFlip', timePassedAfterFlip)
-
     const seconds = timePassedAfterFlip % 60
     return `${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`
   }
 
-  // const text = changeTimeFormat()
-
   const nextImage = tempResult => {
     if (tempResult === 2) {
-      console.log('nextImage run')
-
       clearValues(2)
     } else {
       setSelectionCounter(0)
@@ -138,94 +123,72 @@ export const Game = () => {
     dispatch(setToRememberImgArrayAction(updatedArray))
   }
 
-  const clearValues = tempResult => {
-    if (tempResult === 2) {
-      const updatedGuessArray = toGuessImgArray.map(storedImage => {
-        if (storedImage.id === imageToGuessDisplayed().id) {
-          return {
-            ...storedImage,
-            hidden: true
-          }
-        }
-        return storedImage
-      })
-      dispatch(setToGuessImgArrayAction(updatedGuessArray))
-      console.log('toGuessImgArray', toGuessImgArray)
-
-      const updatedRemArray = toRememberImgArray.map(storedImage => {
-        if (storedImage.selected === true) {
-          return {
-            ...storedImage,
-            guessed: true,
-            selected: false
-          }
-        }
-        return {
-          ...storedImage,
-          selected: false
-        }
-      })
-      console.log('updatedRemArray', updatedRemArray)
-
-      dispatch(setToRememberImgArrayAction(updatedRemArray))
-      console.log('toRememberImgArray', toRememberImgArray) //BUG array is not updated with guessed:true
-      setTotalResult(prev => prev + 2)
+  const clearValues = (tempResult, reset) => {
+    if (reset) {
       setTempResult(0)
       setSelectionCounter(0)
-      // const tempArray = toRememberImgArray.map(storedImage => {
-      //   return {
-      //     ...storedImage,
-      //     selected: false
-      //   }
-      // })
-      // dispatch(setToRememberImgArrayAction(tempArray))
+      const tempArray = toRememberImgArray.map(storedImage => {
+        return {
+          ...storedImage,
+          selected: false,
+          guessed: false
+        }
+      })
+
+      dispatch(setToRememberImgArrayAction(tempArray))
     } else {
-      // flipIncorrectCardsTemp();
-      console.log('incorrect selection run')
+      if (tempResult === 2) {
+        const updatedGuessArray = toGuessImgArray.map(storedImage => {
+          if (storedImage.id === imageToGuessDisplayed().id) {
+            return {
+              ...storedImage,
+              hidden: true
+            }
+          }
+          return storedImage
+        })
+        dispatch(setToGuessImgArrayAction(updatedGuessArray))
 
-      const copyItemsForMutating = { ...itemsForMutating }
-      copyItemsForMutating.condition = ['selected', true]
-      copyItemsForMutating.change = ['guessed']
-      setItemsForMutating(copyItemsForMutating)
-      mutateImgArray(true, toRememberImgArray, itemsForMutating)
-      setTimeout(() => {
-        // flipIncorrectCardsTemp();
-        mutateImgArray(true, toRememberImgArray, itemsForMutating)
-
-        setTempResult(0)
-        setSelectionCounter(0)
-        const tempArray = toRememberImgArray.map(storedImage => {
+        const updatedRemArray = toRememberImgArray.map(storedImage => {
+          if (storedImage.selected === true) {
+            return {
+              ...storedImage,
+              guessed: true,
+              selected: false
+            }
+          }
           return {
             ...storedImage,
             selected: false
           }
         })
-        console.log('tempArray', tempArray)
 
-        dispatch(setToRememberImgArrayAction(tempArray))
-        console.log('timeout run')
-      }, 600)
+        dispatch(setToRememberImgArrayAction(updatedRemArray))
+        setTotalResult(prev => prev + 2)
+        setTempResult(0)
+        setSelectionCounter(0)
+      } else {
+        const itemsForMutating = {
+          condition: ['selected', true],
+          change: ['guessed']
+        }
+
+        mutateImgArray(true, toRememberImgArray, itemsForMutating)
+        setTimeout(() => {
+          mutateImgArray(true, toRememberImgArray, itemsForMutating)
+          setTempResult(0)
+          setSelectionCounter(0)
+          const tempArray = toRememberImgArray.map(storedImage => {
+            return {
+              ...storedImage,
+              selected: false
+            }
+          })
+          dispatch(setToRememberImgArrayAction(tempArray))
+        }, 600)
+      }
     }
   }
-  //   useEffect(() => {
-
-  // }, [toRememberImgArray])
-  // flipIncorrectCardsTemp () {
-  //   console.log("timeout")
-
-  //   const tempArray = toRememberImgArray.map(storedImage => {
-  //     if (storedImage.selected === true && selectionCounter === 2) {
-  //       return {
-  //         ...storedImage,
-  //         guessed: !storedImage.guessed
-  //       }
-  //     }
-  //     return storedImage
-  //   })
-  //   setToRememberImgArray(tempArray)
-  //   // const items = { condition: ["selected", true], change: ["guessed", false] }
-  //   // mutateImgArray(toRememberImgArray, items)
-  // }
 
   const mutateImgArray = (needIf, array, { condition, change }) => {
     const tempArray = array.map(storedImage => {
@@ -245,29 +208,19 @@ export const Game = () => {
   }
 
   const failedAttempt = () => {
-    console.log('failedattempt run')
-
     clearValues()
     if (gameLives >= 0) {
       setGameLives(gameLives => gameLives - 1)
     }
-    // if (gameLives < 0) {
-    //   console.log('run gameover')
-
-    //   dispatch(stopTimer)
-    //   history.push('/gameover')
-    // }
   }
 
   const checkSelection = () => {
-    console.log('toRememberImgArray', toRememberImgArray)
     let result = 0
     toRememberImgArray.forEach(storedImage => {
       if (
         storedImage.selected &&
         storedImage.id === imageToGuessDisplayed().id
       ) {
-        console.log('updating tempResult')
         result += 1
         setTempResult(tempResult => tempResult + 1)
       }
@@ -276,18 +229,16 @@ export const Game = () => {
   }
 
   const resetGame = firstRender => {
-    clearValues()
     dispatch(setTimerEndAction(false))
+
     const tempArray = toRememberImgArray.map(storedImage => {
       return {
         ...storedImage,
         guessed: false
       }
     })
-    console.log('tempArray', tempArray)
 
     dispatch(setToRememberImgArrayAction(tempArray))
-    console.log('toRememberImgArray', toRememberImgArray)
 
     const updatedGuessArray = toGuessImgArray.map(storedImage => {
       return {
@@ -297,10 +248,11 @@ export const Game = () => {
     })
     dispatch(setToGuessImgArrayAction(updatedGuessArray))
     setGameLives(3)
-    setFlipCards(false) //BUG setting is late
-    console.log('flipcards', flipCards)
+    setFlipCards(false)
 
     if (!firstRender) {
+      setTempResult(0)
+      setSelectionCounter(0)
       setTotalResult(0)
       setImageIndex(0)
       dispatch(startTimerAfterStart())
@@ -308,7 +260,9 @@ export const Game = () => {
   }
 
   useEffect(() => {
-    console.log('first useEffect')
+    dispatch(setTimerEndAction(false))
+
+    clearValues(null, true)
     setTempResult(0)
     setSelectionCounter(0)
     setTotalResult(0)
@@ -317,18 +271,9 @@ export const Game = () => {
     dispatch(startTimerAfterStart())
   }, [])
 
-  useEffect(() => {
-    console.log('tempresult', tempResult)
-    // tempResult === 2 ? nextImage() : failedAttempt() //BUG failedAttempt does not run
-  }, [tempResult])
+  useEffect(() => {}, [tempResult])
 
-  useEffect(() => {
-    console.log('flipCards', flipCards)
-  }, [flipCards])
-
-  // useEffect(() => {
-  //   console.log('toRememberImgArray', toRememberImgArray)
-  // }, [toRememberImgArray])
+  useEffect(() => {}, [flipCards])
 
   useEffect(() => {
     if (toRememberImgArray.length === totalResult) {
@@ -339,23 +284,18 @@ export const Game = () => {
 
   useEffect(() => {
     if (gameLives < 0) {
-      console.log('run gameover')
-
       dispatch(stopTimer)
       history.push('/gameover')
     }
   }, [gameLives])
 
   useEffect(() => {
-    console.log('timerEnd', timerEnd)
-
     if (timerEnd) {
-      console.log('timerEnd')
-
       setFlipCards(true)
       dispatch(startTimerAfterFlip())
     }
   }, [timerEnd])
+
   return (
     <>
       <div className={classes.game}>
@@ -440,14 +380,6 @@ export const Game = () => {
                   <Timer
                     className={`${flipCards && classes.hideImg} ${!flipCards &&
                       classes.showImg}`}
-                    // hideTimer={flipCards ? 'hideImg' : ''}
-                    // showTimer={!flipCards ? 'showImg' : ''}
-                    // timerend={event => {
-                    //   if (event) {
-                    //     setFlipCards(true)
-                    //     dispatch(startTimerAfterFlip())
-                    //   }
-                    // }}
                   />
                 </div>
                 <img

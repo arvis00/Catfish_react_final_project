@@ -1,12 +1,13 @@
-export const getNumberOfImg = state => state.numberOfImg
-export const getTimePassedAfterStart = state => state.timePassedAfterStart
-export const getTimePassedAfterFlip = state => state.timePassedAfterFlip
-export const getTimerInterval = state => state.timerInterval
-export const getSizeOfImg = state => state.sizeOfImg
-export const getGameMode = state => state.gameMode
-export const getSearchValue = state => state.searchValue
-export const getToRememberImgArray = state => state.toRememberImgArray
-export const getToGuessImgArray = state => state.toGuessImgArray
-export const getDataFetched = state => state.dataFetched
-export const getSecondsToRemember = state => state.secondsToRemember
-export const getTimerEnd = state => state.timerEnd
+export const getNumberOfImg = state => state.gameOptions.numberOfImg
+export const getTimePassedAfterStart = state => state.timer.timePassedAfterStart
+export const getTimePassedAfterFlip = state => state.timer.timePassedAfterFlip
+export const getStartTimer = state => state.timer.startTimer
+export const getSizeOfImg = state => state.gameOptions.sizeOfImg
+export const getGameMode = state => state.gameOptions.gameMode
+export const getSearchValue = state => state.gameOptions.searchValue
+export const getToRememberImgArray = state =>
+  state.gameOptions.toRememberImgArray
+export const getToGuessImgArray = state => state.gameOptions.toGuessImgArray
+export const getDataFetched = state => state.gameOptions.dataFetched
+export const getSecondsToRemember = state => state.timer.secondsToRemember
+export const getTimerEnd = state => state.timer.timerEnd

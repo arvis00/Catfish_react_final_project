@@ -16,10 +16,10 @@ import {
   setGameModeAction,
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
-  setDataFetchedAction
+  setDataFetchedAction,
+  setTimerEndAction
 } from '../../redux/actionCreators'
-import { passGameMode, passSearchValue, fetchImages } from '../../redux/actions'
-import { Redirect } from 'react-router'
+import { fetchImages } from '../../redux/actions'
 import { getRandomPhotos, getSearchedPhotos } from '../../api'
 import { useHistory } from 'react-router-dom'
 
@@ -27,7 +27,6 @@ export const Start = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [value, setValue] = useState('')
-  const [gameModeStr, setGameModeStr] = useState('random')
   const [errorMsg, setErrorMsg] = useState(false)
 
   const numberOfImg = useSelector(getNumberOfImg)
@@ -37,16 +36,10 @@ export const Start = () => {
   const onInput = event => {
     setValue(event.target.value)
     setErrorMsg(false)
-    dispatch(passSearchValue(event.target.value))
+    dispatch(setSearchValueAction(event.target.value))
   }
 
   const onClickRandom = async () => {
-    // dispatch(
-    //   setGameModeAction(
-    //     `https://api.unsplash.com/photos/random?client_id=KdhCvP8tXfN1Byw49YkwKeDjHe5oa8fpZS2YGgmTYIM&count=${numberOfImg}`
-    //   ))
-    // dispatch(passGameMode('random'))
-
     if (localStorage.getItem('toRememberImg')) {
       const data = JSON.parse(localStorage.getItem('toRememberImg'))
       dispatch(setToRememberImgArrayAction(data))
@@ -62,28 +55,22 @@ export const Start = () => {
       dispatch(setDataFetchedAction(true))
     } else {
       const data = await getRandomPhotos(numberOfImg)
-      console.log(data)
-
       dispatch(fetchImages(data))
     }
     history.push('/game')
-    // return <Redirect push to="/game" />
   }
 
   const onClickSearch = async event => {
     event.preventDefault()
     if (value) {
       const result = await getSearchedPhotos(numberOfImg, searchValue)
-      // dispatch(passGameMode('search'))
-      // const result = await dispatch(fetchImages())
-      console.log('searchResult', result)
-
       if (!result.errors) {
         setErrorMsg(false)
-        history.push('/game') //BUG links to /results if previous history was finished game
+        dispatch(setGameModeAction('search'))
+        dispatch(setSearchValueAction(value))
+        dispatch(fetchImages(result))
+        history.push('/game')
       } else {
-        console.log('error')
-
         setValue('')
         setErrorMsg(true)
       }
@@ -91,7 +78,7 @@ export const Start = () => {
   }
   useEffect(() => {
     dispatch(setSearchValueAction(''))
-    // setGameModeStr('random')
+    dispatch(setTimerEndAction(false))
   }, [])
 
   return (
@@ -156,6 +143,7 @@ export const Start = () => {
             max="30"
             step="2"
             value={numberOfImg}
+            classNameText={classes.settingsText}
             onChange={event =>
               dispatch(setNumberOfImgAction(event.target.value))
             }
@@ -168,6 +156,7 @@ export const Start = () => {
             max="60"
             step="1"
             value={secondsToRemember}
+            classNameText={classes.settingsText}
             onChange={event =>
               dispatch(setSecondsToRememberAction(event.target.value))
             }
