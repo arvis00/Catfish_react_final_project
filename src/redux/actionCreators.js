@@ -26,7 +26,7 @@ export const setSizeOfImgAction = newData => ({
   newData
 })
 export const setTimePassedAfterFlipAction = newData => (dispatch, getState) => {
-  const { timePassedAfterFlip } = getState()
+  const { timePassedAfterFlip } = getState().timer
 
   let data = newData === 1 ? timePassedAfterFlip + 1 : 0
 
