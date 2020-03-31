@@ -18,18 +18,6 @@ import thunk from 'redux-thunk'
 const rootReducer = combineReducers({
   timer: reducerTimer,
   gameOptions: reducerGameOptions
-  // dataFetched: reducerGameOptions,
-  // gameMode: reducerGameOptions,
-  // numberOfImg: reducerGameOptions,
-  // searchValue: reducerGameOptions,
-  // secondsToRemember: reducerTimer,
-  // sizeOfImg: reducerGameOptions,
-  // timePassedAfterFlip: reducerTimer,
-  // timePassedAfterStart: reducerTimer,
-  // startTimer: reducerTimer,
-  // toGuessImgArray: reducerGameOptions,
-  // toRememberImgArray: reducerGameOptions,
-  // timerEnd: reducerTimer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))

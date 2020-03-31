@@ -25,27 +25,6 @@ export const setSizeOfImgAction = newData => ({
   type: actionTypes.REPLACE_SIZE_OF_IMG,
   newData
 })
-export const setTimePassedAfterFlipAction = newData => (dispatch, getState) => {
-  const { timePassedAfterFlip } = getState().timer
-
-  let data = newData === 1 ? timePassedAfterFlip + 1 : 0
-
-  dispatch({
-    type: actionTypes.REPLACE_TIME_PASSED_AFTER_FLIP,
-    newData: data
-  })
-}
-export const setTimePassedAfterStartAction = newData => (
-  dispatch,
-  getState
-) => {
-  const { timePassedAfterStart } = getState().timer
-  let data = newData === 1 ? timePassedAfterStart + 1 : 0
-  dispatch({
-    type: actionTypes.REPLACE_TIME_PASSED_AFTER_START,
-    newData: data
-  })
-}
 
 export const setStartTimerAction = newData => ({
   type: actionTypes.REPLACE_START_TIMER,

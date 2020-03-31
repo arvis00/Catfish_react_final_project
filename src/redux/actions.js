@@ -2,17 +2,39 @@ import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
   setDataFetchedAction,
-  setTimePassedAfterStartAction,
-  setTimePassedAfterFlipAction,
   setStartTimerAction
 } from './actionCreators'
 import shuffle from 'lodash.shuffle'
+import * as actionTypes from './actionTypes'
 
-export const saveInfo = (toRememberImgArray, toGuessImgArray) => {
-  const parsed = JSON.stringify(toGuessImgArray)
-  localStorage.setItem('toGuessImg', parsed)
-  const parsed2 = JSON.stringify(toRememberImgArray)
-  localStorage.setItem('toRememberImg', parsed2)
+// export const saveInfo = (toRememberImgArray, toGuessImgArray) => {
+//   const parsed = JSON.stringify(toGuessImgArray)
+//   localStorage.setItem('toGuessImg', parsed)
+//   const parsed2 = JSON.stringify(toRememberImgArray)
+//   localStorage.setItem('toRememberImg', parsed2)
+// }
+
+export const setTimePassedAfterFlipAction = newData => (dispatch, getState) => {
+  const { timePassedAfterFlip } = getState().timer
+
+  let data = newData === 1 ? timePassedAfterFlip + 1 : 0
+
+  dispatch({
+    type: actionTypes.REPLACE_TIME_PASSED_AFTER_FLIP,
+    newData: data
+  })
+}
+
+export const setTimePassedAfterStartAction = newData => (
+  dispatch,
+  getState
+) => {
+  const { timePassedAfterStart } = getState().timer
+  let data = newData === 1 ? timePassedAfterStart + 1 : 0
+  dispatch({
+    type: actionTypes.REPLACE_TIME_PASSED_AFTER_START,
+    newData: data
+  })
 }
 
 export const fetchImages = data => (dispatch, getState) => {

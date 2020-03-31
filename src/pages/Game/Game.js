@@ -261,7 +261,6 @@ export const Game = () => {
 
   useEffect(() => {
     dispatch(setTimerEndAction(false))
-
     clearValues(null, true)
     setTempResult(0)
     setSelectionCounter(0)
@@ -271,19 +270,22 @@ export const Game = () => {
     dispatch(startTimerAfterStart())
   }, [])
 
-  useEffect(() => {}, [tempResult])
-
-  useEffect(() => {}, [flipCards])
-
   useEffect(() => {
-    if (toRememberImgArray.length === totalResult) {
+    if (
+      toRememberImgArray.length !== 0 &&
+      toRememberImgArray.length === totalResult
+    ) {
       dispatch(stopTimer)
       history.push('/results')
+    }
+    if (toRememberImgArray.length === 0) {
+      dispatch(stopTimer)
+      history.push('/')
     }
   }, [totalResult])
 
   useEffect(() => {
-    if (gameLives < 0) {
+    if (gameLives < 1) {
       dispatch(stopTimer)
       history.push('/gameover')
     }
