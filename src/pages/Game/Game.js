@@ -36,7 +36,7 @@ export const Game = () => {
   const [gameLives, setGameLives] = useState(3)
 
   const toGuessImgArray = useSelector(getToGuessImgArray)
-  const { counter: timePassedAfterFlip } = useSelector(getTimePassedAfterFlip)
+  const timePassedAfterFlip = useSelector(getTimePassedAfterFlip)
   const toRememberImgArray = useSelector(getToRememberImgArray)
   const sizeOfImg = useSelector(getSizeOfImg)
   const numberOfImg = useSelector(getNumberOfImg)

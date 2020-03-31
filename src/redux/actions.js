@@ -7,10 +7,16 @@ import {
   setStartTimerAction
 } from './actionCreators'
 import shuffle from 'lodash.shuffle'
-import { saveInfo } from '../components/Timer/utils'
+
+export const saveInfo = (toRememberImgArray, toGuessImgArray) => {
+  const parsed = JSON.stringify(toGuessImgArray)
+  localStorage.setItem('toGuessImg', parsed)
+  const parsed2 = JSON.stringify(toRememberImgArray)
+  localStorage.setItem('toRememberImg', parsed2)
+}
 
 export const fetchImages = data => (dispatch, getState) => {
-  const { numberOfImg } = getState()
+  const { numberOfImg } = getState().gameOptions
   try {
     const splitArray = data.splice(numberOfImg / 2)
     const toRememberShuffled = shuffle([...data, ...data])
@@ -26,7 +32,7 @@ export const fetchImages = data => (dispatch, getState) => {
     dispatch(setToGuessImgArrayAction(toGuessShuffled))
     dispatch(setDataFetchedAction(true))
 
-    saveInfo(toRememberShuffled, toGuessShuffled) // localstorage turned off/on
+    // saveInfo(toRememberShuffled, toGuessShuffled) // localstorage turned off/on
     return true
   } catch (error) {
     return false

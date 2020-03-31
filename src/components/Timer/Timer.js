@@ -11,7 +11,7 @@ import { stopTimer } from '../../redux/actions'
 
 export const Timer = ({ className }) => {
   const secondsToRemember = useSelector(getSecondsToRemember)
-  const { counter: timePassedAfterStart } = useSelector(getTimePassedAfterStart)
+  const timePassedAfterStart = useSelector(getTimePassedAfterStart)
   const timerEnd = useSelector(getTimerEnd)
   const dispatch = useDispatch()
   const FULL_DASH_ARRAY = 283

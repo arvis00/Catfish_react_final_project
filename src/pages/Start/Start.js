@@ -54,6 +54,7 @@ export const Start = () => {
       dispatch(setToGuessImgArrayAction(result))
       dispatch(setDataFetchedAction(true))
     } else {
+      dispatch(setGameModeAction('random'))
       const data = await getRandomPhotos(numberOfImg)
       dispatch(fetchImages(data))
     }

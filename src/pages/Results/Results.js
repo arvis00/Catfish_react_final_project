@@ -16,7 +16,7 @@ import { getSearchedPhotos, getRandomPhotos } from '../../api'
 
 export const Results = () => {
   const [timestamp, setTimestamp] = useState(0)
-  const { counter: timePassedAfterFlip } = useSelector(getTimePassedAfterFlip)
+  const timePassedAfterFlip = useSelector(getTimePassedAfterFlip)
   const gameMode = useSelector(getGameMode)
   const numberOfImg = useSelector(getNumberOfImg)
   const searchValue = useSelector(getSearchValue)
@@ -29,7 +29,7 @@ export const Results = () => {
       const data = await getSearchedPhotos(numberOfImg, searchValue)
       dispatch(fetchImages(data))
     } else if (gameMode === 'random') {
-      const data = getRandomPhotos(numberOfImg)
+      const data = await getRandomPhotos(numberOfImg)
       dispatch(fetchImages(data))
     }
   }
