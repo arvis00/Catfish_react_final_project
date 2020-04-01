@@ -11,7 +11,10 @@ import {
 } from '../../redux/selectors'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { setTimerEndAction } from '../../redux/actionCreators'
+import {
+  setTimerEndAction,
+  setDataFetchedAction
+} from '../../redux/actionCreators'
 import { getSearchedPhotos, getRandomPhotos } from '../../api'
 
 export const Results = () => {
@@ -38,6 +41,9 @@ export const Results = () => {
     const seconds = timePassedAfterFlip % 60
     setTimestamp(`${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`)
     dispatch(setTimerEndAction(false))
+    dispatch(setDataFetchedAction(false))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>

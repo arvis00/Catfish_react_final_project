@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import classes from './Game.module.scss'
 import { Slider } from '../../components/Slider/Slider'
-import { Timer } from '../../components/Timer/Timer'
 import { Button } from '../../components/Button/Button'
 import { Link } from 'react-router-dom'
 import {
@@ -9,40 +8,45 @@ import {
   getTimePassedAfterFlip,
   getToRememberImgArray,
   getSizeOfImg,
-  getNumberOfImg,
   getDataFetched,
-  getTimerEnd
+  getTimerEnd,
+  getFlipCards,
+  getSelectionCounter,
+  getNumberOfImg
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
   setSizeOfImgAction,
-  setTimerEndAction
+  setTimerEndAction,
+  setFlipCards,
+  setDataFetchedAction
 } from '../../redux/actionCreators'
 import { useHistory } from 'react-router-dom'
 import {
   startTimerAfterStart,
   startTimerAfterFlip,
-  stopTimer
+  stopTimer,
+  setSelectionCounterAction
 } from '../../redux/actions'
+import ContainerWithCards from '../../components/ContainerWithCards'
+import ContainerWithImageToFind from '../../components/ContainerWithImageToFind'
 
 export const Game = () => {
   const [imageIndex, setImageIndex] = useState(0)
-  const [selectionCounter, setSelectionCounter] = useState(0)
-  const [tempResult, setTempResult] = useState(0)
   const [totalResult, setTotalResult] = useState(0)
-  const [flipCards, setFlipCards] = useState(false)
   const [gameLives, setGameLives] = useState(3)
 
   const toGuessImgArray = useSelector(getToGuessImgArray)
   const timePassedAfterFlip = useSelector(getTimePassedAfterFlip)
   const toRememberImgArray = useSelector(getToRememberImgArray)
   const sizeOfImg = useSelector(getSizeOfImg)
-  const numberOfImg = useSelector(getNumberOfImg)
   const dataFetched = useSelector(getDataFetched)
   const timerEnd = useSelector(getTimerEnd)
-
+  const flipCards = useSelector(getFlipCards)
+  const selectionCounter = useSelector(getSelectionCounter)
+  const numberOfImg = useSelector(getNumberOfImg)
   const history = useHistory()
 
   const dispatch = useDispatch()
@@ -63,7 +67,7 @@ export const Game = () => {
     if (tempResult === 2) {
       clearValues(2)
     } else {
-      setSelectionCounter(0)
+      dispatch(setSelectionCounterAction(0))
       const tempArray = toRememberImgArray.map(storedImage => {
         return {
           ...storedImage,
@@ -95,38 +99,9 @@ export const Game = () => {
     }
   }
 
-  const selectAnswer = (image, index) => {
-    const updatedArray = toRememberImgArray.map((storedImage, indexMap) => {
-      if (
-        index === indexMap &&
-        selectionCounter <= 1 &&
-        !storedImage.selected
-      ) {
-        setSelectionCounter(prev => prev + 1)
-        return {
-          ...storedImage,
-          selected: true
-        }
-      }
-      if (storedImage.selected && index !== indexMap) {
-        return storedImage
-      }
-      if (storedImage.selected && index === indexMap) {
-        setSelectionCounter(prev => prev - 1)
-        return {
-          ...storedImage,
-          selected: false
-        }
-      }
-      return { ...storedImage, selected: false }
-    })
-    dispatch(setToRememberImgArrayAction(updatedArray))
-  }
-
   const clearValues = (tempResult, reset) => {
     if (reset) {
-      setTempResult(0)
-      setSelectionCounter(0)
+      dispatch(setSelectionCounterAction(0))
       const tempArray = toRememberImgArray.map(storedImage => {
         return {
           ...storedImage,
@@ -134,7 +109,6 @@ export const Game = () => {
           guessed: false
         }
       })
-
       dispatch(setToRememberImgArrayAction(tempArray))
     } else {
       if (tempResult === 2) {
@@ -148,7 +122,6 @@ export const Game = () => {
           return storedImage
         })
         dispatch(setToGuessImgArrayAction(updatedGuessArray))
-
         const updatedRemArray = toRememberImgArray.map(storedImage => {
           if (storedImage.selected === true) {
             return {
@@ -162,22 +135,18 @@ export const Game = () => {
             selected: false
           }
         })
-
         dispatch(setToRememberImgArrayAction(updatedRemArray))
         setTotalResult(prev => prev + 2)
-        setTempResult(0)
-        setSelectionCounter(0)
+        dispatch(setSelectionCounterAction(0))
       } else {
         const itemsForMutating = {
           condition: ['selected', true],
           change: ['guessed']
         }
-
         mutateImgArray(true, toRememberImgArray, itemsForMutating)
         setTimeout(() => {
           mutateImgArray(true, toRememberImgArray, itemsForMutating)
-          setTempResult(0)
-          setSelectionCounter(0)
+          dispatch(setSelectionCounterAction(0))
           const tempArray = toRememberImgArray.map(storedImage => {
             return {
               ...storedImage,
@@ -222,7 +191,6 @@ export const Game = () => {
         storedImage.id === imageToGuessDisplayed().id
       ) {
         result += 1
-        setTempResult(tempResult => tempResult + 1)
       }
     })
     result === 2 ? nextImage(2) : failedAttempt()
@@ -230,16 +198,13 @@ export const Game = () => {
 
   const resetGame = firstRender => {
     dispatch(setTimerEndAction(false))
-
     const tempArray = toRememberImgArray.map(storedImage => {
       return {
         ...storedImage,
         guessed: false
       }
     })
-
     dispatch(setToRememberImgArrayAction(tempArray))
-
     const updatedGuessArray = toGuessImgArray.map(storedImage => {
       return {
         ...storedImage,
@@ -248,11 +213,9 @@ export const Game = () => {
     })
     dispatch(setToGuessImgArrayAction(updatedGuessArray))
     setGameLives(3)
-    setFlipCards(false)
-
+    dispatch(setFlipCards(false))
     if (!firstRender) {
-      setTempResult(0)
-      setSelectionCounter(0)
+      dispatch(setSelectionCounterAction(0))
       setTotalResult(0)
       setImageIndex(0)
       dispatch(startTimerAfterStart())
@@ -262,12 +225,13 @@ export const Game = () => {
   useEffect(() => {
     dispatch(setTimerEndAction(false))
     clearValues(null, true)
-    setTempResult(0)
-    setSelectionCounter(0)
+    dispatch(setSelectionCounterAction(0))
     setTotalResult(0)
     setImageIndex(0)
     resetGame(true)
     dispatch(startTimerAfterStart())
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -282,6 +246,7 @@ export const Game = () => {
       dispatch(stopTimer)
       history.push('/')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalResult])
 
   useEffect(() => {
@@ -289,13 +254,15 @@ export const Game = () => {
       dispatch(stopTimer)
       history.push('/gameover')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameLives])
 
   useEffect(() => {
     if (timerEnd) {
-      setFlipCards(true)
+      dispatch(setFlipCards(true))
       dispatch(startTimerAfterFlip())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerEnd])
 
   return (
@@ -321,113 +288,51 @@ export const Game = () => {
             {gameLives}
           </div>
         </div>
-        <div className={classes.gameContent}>
-          <div className={classes.imgToRememberContainer}>
-            {dataFetched && (
-              <ul className={classes.imageList}>
-                {toRememberImgArray.map((image, index) => (
-                  <li key={index}>
-                    <div
-                      style={{ height: sizeOfImg + 'px' }}
-                      className={`${classes.imgListItem}
-                  ${
-                    flipCards && !image.guessed ? classes.imgListItemFlip : ''
-                  } ${!flipCards || image.guessed ? classes.pointerEvent : ''}`}
-                      onClick={() => selectAnswer(image, index)}
+        {dataFetched &&
+        toRememberImgArray.length === numberOfImg &&
+        toGuessImgArray.length === numberOfImg ? (
+          <div className={classes.gameContent}>
+            <ContainerWithCards />
+            <div className={classes.selectImg}>
+              <ContainerWithImageToFind
+                imageToGuessDisplayed={toGuessImgArray[imageIndex]}
+              />
+
+              <div
+                className={`${classes.buttonContainer} ${flipCards &&
+                  classes.showBtn} ${!flipCards && classes.hideBtn}`}
+              >
+                <div className={classes.nextContainer}>
+                  {selectionCounter !== 2 && (
+                    <Button className={classes.bottomBtn} onClick={nextImage}>
+                      NEXT IMAGE
+                    </Button>
+                  )}
+                  {selectionCounter === 2 && (
+                    <Button
+                      className={classes.bottomBtn}
+                      disabled={selectionCounter !== 2}
+                      onClick={checkSelection}
                     >
-                      <div
-                        className={classes.backCard}
-                        style={{
-                          height: sizeOfImg + 'px',
-                          width: sizeOfImg + 'px',
-                          transform: ' translateZ(' + sizeOfImg / 2 + 'px)'
-                        }}
-                      >
-                        <img
-                          src={
-                            image.urls.raw +
-                            '&fit=crop&w=' +
-                            sizeOfImg +
-                            '&h=' +
-                            sizeOfImg
-                          }
-                          alt=""
-                        />
-                      </div>
-                      <div
-                        style={{
-                          height: sizeOfImg + 'px',
-                          width: sizeOfImg + 'px',
-                          transform:
-                            'rotateX(-90deg) translateZ(-' +
-                            sizeOfImg / 2 +
-                            'px)',
-                          backgroundPosition: `${(100 / numberOfImg) *
-                            index}% ${(100 / numberOfImg) * index}%`
-                        }}
-                        className={`${classes.frontCard}
-                        ${image.selected && classes.selected}
-                      `}
-                      ></div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className={classes.selectImg}>
-            {dataFetched && (
-              <div className={classes.taskImgContainer}>
-                <div style={{ height: 200 + 'px' }}>
-                  <Timer
-                    className={`${flipCards && classes.hideImg} ${!flipCards &&
-                      classes.showImg}`}
-                  />
+                      CHECK
+                    </Button>
+                  )}
                 </div>
-                <img
-                  className={`${flipCards && classes.showImg} ${!flipCards &&
-                    classes.hideImg}`}
-                  src={
-                    imageToGuessDisplayed().urls.raw + '&fit=crop&w=200&h=200'
-                  }
-                  alt=""
-                />
-              </div>
-            )}
-            <div
-              className={`${classes.buttonContainer} ${flipCards &&
-                classes.showBtn} ${!flipCards && classes.hideBtn}`}
-            >
-              <div className={classes.nextContainer}>
-                {selectionCounter !== 2 && (
-                  <Button className={classes.bottomBtn} onClick={nextImage}>
-                    NEXT IMAGE
-                  </Button>
-                )}
-                {selectionCounter === 2 && (
+                <div className={classes.otherBtnContainer}>
                   <Button
                     className={classes.bottomBtn}
-                    disabled={selectionCounter !== 2}
-                    onClick={checkSelection}
+                    onClick={() => resetGame(false)}
                   >
-                    CHECK
+                    RESET GAME
                   </Button>
-                )}
-              </div>
-              <div className={classes.otherBtnContainer}>
-                <Button
-                  className={classes.bottomBtn}
-                  onClick={() => resetGame(false)}
-                >
-                  RESET GAME
-                </Button>
-                <Link to="/" className={classes.homeLink}>
-                  <Button className={classes.bottomBtn}>HOME</Button>
-                </Link>
+                  <Link to="/" className={classes.homeLink}>
+                    <Button className={classes.bottomBtn}>HOME</Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </>
   )

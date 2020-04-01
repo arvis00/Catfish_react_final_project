@@ -42,3 +42,11 @@ export const setTimerEndAction = newData => ({
   type: actionTypes.REPLACE_TIMER_END,
   newData
 })
+export const setFlipCards = newData => ({
+  type: actionTypes.REPLACE_FLIP_CARDS,
+  newData
+})
+// export const setIsLoading = newData => ({
+//   type: actionTypes.REPLACE_IS_LOADING,
+//   newData
+// })

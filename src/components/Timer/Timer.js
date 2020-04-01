@@ -15,8 +15,8 @@ export const Timer = ({ className }) => {
   const timerEnd = useSelector(getTimerEnd)
   const dispatch = useDispatch()
   const FULL_DASH_ARRAY = 283
-  const WARNING_THRESHOLD = 5
-  const ALERT_THRESHOLD = 3
+  const WARNING_THRESHOLD = 10
+  const ALERT_THRESHOLD = 5
 
   const COLOR_CODES = {
     info: {

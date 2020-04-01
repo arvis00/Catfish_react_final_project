@@ -52,12 +52,13 @@ export const Start = () => {
         }
       )
       dispatch(setToGuessImgArrayAction(result))
-      dispatch(setDataFetchedAction(true))
+      // dispatch(setDataFetchedAction(true))
     } else {
       dispatch(setGameModeAction('random'))
       const data = await getRandomPhotos(numberOfImg)
       dispatch(fetchImages(data))
     }
+    // dispatch(setDataFetchedAction(true))
     history.push('/game')
   }
 
@@ -80,6 +81,8 @@ export const Start = () => {
   useEffect(() => {
     dispatch(setSearchValueAction(''))
     dispatch(setTimerEndAction(false))
+    dispatch(setDataFetchedAction(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

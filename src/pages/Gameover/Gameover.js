@@ -11,6 +11,7 @@ export const Gameover = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(setTimerEndAction(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>

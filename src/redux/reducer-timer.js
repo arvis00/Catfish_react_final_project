@@ -5,6 +5,7 @@ const initialState = {
   timePassedAfterStart: 0,
   timerEnd: false,
   startTimer: null
+  // isLoading: false
 }
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -18,6 +19,8 @@ export default (state = initialState, action) => {
       return { ...state, timerEnd: action.newData }
     case actionTypes.REPLACE_START_TIMER:
       return { ...state, startTimer: action.newData }
+    // case actionTypes.REPLACE_IS_LOADING:
+    //   return { ...state, isLoading: action.newData }
     default:
       return state
   }

@@ -6,7 +6,9 @@ const initialState = {
   gameMode: null,
   numberOfImg: 16,
   searchValue: null,
-  sizeOfImg: '100'
+  sizeOfImg: '100',
+  flipCards: false,
+  selectionCounter: 0
 }
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -24,6 +26,10 @@ export default (state = initialState, action) => {
       return { ...state, searchValue: action.newData }
     case actionTypes.REPLACE_SIZE_OF_IMG:
       return { ...state, sizeOfImg: action.newData }
+    case actionTypes.REPLACE_FLIP_CARDS:
+      return { ...state, flipCards: action.newData }
+    case actionTypes.REPLACE_SELECTION_COUNTER:
+      return { ...state, selectionCounter: action.newData }
     default:
       return state
   }

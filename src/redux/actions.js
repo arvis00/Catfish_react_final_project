@@ -3,6 +3,7 @@ import {
   setToGuessImgArrayAction,
   setDataFetchedAction,
   setStartTimerAction
+  // setIsLoading
 } from './actionCreators'
 import shuffle from 'lodash.shuffle'
 import * as actionTypes from './actionTypes'
@@ -37,6 +38,27 @@ export const setTimePassedAfterStartAction = newData => (
   })
 }
 
+export const setSelectionCounterAction = (newData, increment, decrement) => (
+  dispatch,
+  getState
+) => {
+  let data
+  const { selectionCounter } = getState().gameOptions
+  if (increment) {
+    data = increment ? selectionCounter + 1 : 0
+  }
+  if (decrement) {
+    data = increment ? selectionCounter - 1 : 0
+  }
+  if (newData === 0) {
+    data = newData
+  }
+  dispatch({
+    type: actionTypes.REPLACE_SELECTION_COUNTER,
+    newData: data
+  })
+}
+
 export const fetchImages = data => (dispatch, getState) => {
   const { numberOfImg } = getState().gameOptions
   try {
@@ -55,8 +77,10 @@ export const fetchImages = data => (dispatch, getState) => {
     dispatch(setDataFetchedAction(true))
 
     // saveInfo(toRememberShuffled, toGuessShuffled) // localstorage turned off/on
+    // dispatch(setIsLoading(false))
     return true
   } catch (error) {
+    // dispatch(setIsLoading(false))
     return false
   }
 }
