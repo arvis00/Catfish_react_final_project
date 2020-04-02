@@ -19,7 +19,11 @@ import {
   setDataFetchedAction,
   setTimerEndAction
 } from '../../redux/actionCreators'
-import { fetchImages } from '../../redux/actions'
+import {
+  fetchImages,
+  setTimePassedAfterStartAction,
+  setTimePassedAfterFlipAction
+} from '../../redux/actions'
 import { getRandomPhotos, getSearchedPhotos } from '../../api'
 import { useHistory } from 'react-router-dom'
 
@@ -56,6 +60,7 @@ export const Start = () => {
     } else {
       dispatch(setGameModeAction('random'))
       const data = await getRandomPhotos(numberOfImg)
+      // dispatch(setDataFetchedAction(true))
       dispatch(fetchImages(data))
     }
     // dispatch(setDataFetchedAction(true))
@@ -78,10 +83,13 @@ export const Start = () => {
       }
     }
   }
+
   useEffect(() => {
     dispatch(setSearchValueAction(''))
     dispatch(setTimerEndAction(false))
     dispatch(setDataFetchedAction(false))
+    // dispatch(setTimePassedAfterStartAction(0))
+    // dispatch(setTimePassedAfterFlipAction(0))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

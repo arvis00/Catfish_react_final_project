@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import classes from './Results.module.scss'
-import { fetchImages } from '../../redux/actions'
+import {
+  fetchImages,
+  setTimePassedAfterStartAction,
+  setTimePassedAfterFlipAction
+} from '../../redux/actions'
 import { Link } from 'react-router-dom'
 import { Button } from '../../components/Button/Button'
 import {
@@ -41,8 +45,9 @@ export const Results = () => {
     const seconds = timePassedAfterFlip % 60
     setTimestamp(`${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`)
     dispatch(setTimerEndAction(false))
-    dispatch(setDataFetchedAction(false))
-
+    // dispatch(setDataFetchedAction(false))
+    // dispatch(setTimePassedAfterStartAction(0))
+    // dispatch(setTimePassedAfterFlipAction(0))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (

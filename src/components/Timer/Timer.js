@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classes from './Timer.module.scss'
 import {
   getSecondsToRemember,
@@ -7,7 +7,11 @@ import {
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import { setTimerEndAction } from '../../redux/actionCreators'
-import { stopTimer } from '../../redux/actions'
+import {
+  stopTimer,
+  setTimePassedAfterStartAction,
+  setTimePassedAfterFlipAction
+} from '../../redux/actions'
 
 export const Timer = ({ className }) => {
   const secondsToRemember = useSelector(getSecondsToRemember)
@@ -40,8 +44,13 @@ export const Timer = ({ className }) => {
   const timeLeft = () => {
     if (!timerEnd) {
       const time = secondsToRemember - timePassedAfterStart
+      console.log('time', time)
+      console.log('secondsToRemember', secondsToRemember)
+      console.log('timePassedAfterStart', timePassedAfterStart)
+
       if (time === 0) {
         dispatch(onTimesUp())
+        console.log('timesup')
       } else {
         return time
       }
@@ -66,6 +75,11 @@ export const Timer = ({ className }) => {
       return info.color
     }
   }
+
+  useEffect(() => {
+    dispatch(setTimePassedAfterStartAction(0))
+    dispatch(setTimePassedAfterFlipAction(0))
+  }, [])
 
   return (
     <>

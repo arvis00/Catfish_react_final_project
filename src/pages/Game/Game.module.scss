@@ -44,6 +44,9 @@
 }
 .gameContent {
   margin: 20px 140px;
+  &.hidden {
+    visibility: hidden;
+  }
   .imgToRememberContainer {
     display: flex;
     justify-content: center;

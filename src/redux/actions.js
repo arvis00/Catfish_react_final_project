@@ -93,11 +93,12 @@ export const stopTimer = () => {
 
 export const startTimerAfterStart = () => dispatch => {
   stopTimer()
-  dispatch(setTimePassedAfterStartAction(0))
-  dispatch(setTimePassedAfterFlipAction(0))
+  // dispatch(setTimePassedAfterStartAction(0))
+  // dispatch(setTimePassedAfterFlipAction(0))
   time = 0
   time = setInterval(() => dispatch(setTimePassedAfterStartAction(1)), 1000)
   dispatch(setStartTimerAction(time))
+  console.log('startTimer')
 }
 
 export const startTimerAfterFlip = () => dispatch => {

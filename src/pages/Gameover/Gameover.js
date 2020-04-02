@@ -2,15 +2,25 @@ import React from 'react'
 import classes from './Gameover.module.scss'
 import { Button } from '../../components/Button/Button'
 import { Link } from 'react-router-dom'
-import { fetchImages } from '../../redux/actions'
+import {
+  fetchImages,
+  setTimePassedAfterStartAction,
+  setTimePassedAfterFlipAction
+} from '../../redux/actions'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { setTimerEndAction } from '../../redux/actionCreators'
+import {
+  setTimerEndAction,
+  setDataFetchedAction
+} from '../../redux/actionCreators'
 
 export const Gameover = () => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(setTimerEndAction(false))
+    dispatch(setDataFetchedAction(false))
+    // dispatch(setTimePassedAfterStartAction(0))
+    // dispatch(setTimePassedAfterFlipAction(0))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (

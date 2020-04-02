@@ -12,7 +12,8 @@ import {
   getTimerEnd,
   getFlipCards,
   getSelectionCounter,
-  getNumberOfImg
+  getNumberOfImg,
+  getGameMode
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -28,15 +29,19 @@ import {
   startTimerAfterStart,
   startTimerAfterFlip,
   stopTimer,
-  setSelectionCounterAction
+  setSelectionCounterAction,
+  setTimePassedAfterStartAction,
+  setTimePassedAfterFlipAction
 } from '../../redux/actions'
 import ContainerWithCards from '../../components/ContainerWithCards'
 import ContainerWithImageToFind from '../../components/ContainerWithImageToFind'
+import Loader from '../../components/Loader'
 
 export const Game = () => {
   const [imageIndex, setImageIndex] = useState(0)
   const [totalResult, setTotalResult] = useState(0)
   const [gameLives, setGameLives] = useState(3)
+  const [isLoading, setIsLoading] = useState(true)
 
   const toGuessImgArray = useSelector(getToGuessImgArray)
   const timePassedAfterFlip = useSelector(getTimePassedAfterFlip)
@@ -47,8 +52,9 @@ export const Game = () => {
   const flipCards = useSelector(getFlipCards)
   const selectionCounter = useSelector(getSelectionCounter)
   const numberOfImg = useSelector(getNumberOfImg)
-  const history = useHistory()
+  const gameMode = useSelector(getGameMode)
 
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const imageToGuessDisplayed = () => {
@@ -218,19 +224,31 @@ export const Game = () => {
       dispatch(setSelectionCounterAction(0))
       setTotalResult(0)
       setImageIndex(0)
+      dispatch(setTimePassedAfterStartAction(0))
+      dispatch(setTimePassedAfterFlipAction(0))
       dispatch(startTimerAfterStart())
     }
   }
 
   useEffect(() => {
+    // setIsLoading(true)
+
     dispatch(setTimerEndAction(false))
     clearValues(null, true)
     dispatch(setSelectionCounterAction(0))
     setTotalResult(0)
     setImageIndex(0)
     resetGame(true)
-    dispatch(startTimerAfterStart())
+    console.log('datafetched', dataFetched)
 
+    toRememberImgArray.length !== 0 &&
+      setTimeout(
+        () => {
+          setIsLoading(false)
+          dispatch(startTimerAfterStart())
+        },
+        dataFetched ? 2000 : 0
+      )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -264,9 +282,11 @@ export const Game = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerEnd])
+  console.log('timerend', timerEnd)
 
   return (
     <>
+      {isLoading && <Loader />}
       <div className={classes.game}>
         <div className={classes.header}>
           <Slider
@@ -288,10 +308,10 @@ export const Game = () => {
             {gameLives}
           </div>
         </div>
-        {dataFetched &&
-        toRememberImgArray.length === numberOfImg &&
-        toGuessImgArray.length === numberOfImg ? (
-          <div className={classes.gameContent}>
+        {toRememberImgArray.length !== 0 && toGuessImgArray.length !== 0 && (
+          <div
+            className={`${classes.gameContent} ${isLoading && classes.hidden}`}
+          >
             <ContainerWithCards />
             <div className={classes.selectImg}>
               <ContainerWithImageToFind
@@ -332,7 +352,7 @@ export const Game = () => {
               </div>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </>
   )
