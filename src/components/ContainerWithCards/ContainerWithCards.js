@@ -33,6 +33,9 @@ export const ContainerWithCards = () => {
         !storedImage.selected
       ) {
         dispatch(setSelectionCounterAction(null, true))
+        console.log('selected', toRememberImgArray)
+        console.log('counter', selectionCounter)
+
         return {
           ...storedImage,
           selected: true

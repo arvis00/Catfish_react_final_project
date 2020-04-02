@@ -44,10 +44,10 @@ export const setSelectionCounterAction = (newData, increment, decrement) => (
   let data
   const { selectionCounter } = getState().gameOptions
   if (increment) {
-    data = increment ? selectionCounter + 1 : 0
+    data = selectionCounter + 1
   }
   if (decrement) {
-    data = increment ? selectionCounter - 1 : 0
+    data = selectionCounter - 1
   }
   if (newData === 0) {
     data = newData
