@@ -21,8 +21,7 @@ import {
   setToGuessImgArrayAction,
   setSizeOfImgAction,
   setTimerEndAction,
-  setFlipCards,
-  setDataFetchedAction
+  setFlipCards
 } from '../../redux/actionCreators'
 import { useHistory } from 'react-router-dom'
 import {
@@ -51,8 +50,6 @@ export const Game = () => {
   const timerEnd = useSelector(getTimerEnd)
   const flipCards = useSelector(getFlipCards)
   const selectionCounter = useSelector(getSelectionCounter)
-  const numberOfImg = useSelector(getNumberOfImg)
-  const gameMode = useSelector(getGameMode)
 
   const history = useHistory()
   const dispatch = useDispatch()
@@ -231,15 +228,12 @@ export const Game = () => {
   }
 
   useEffect(() => {
-    // setIsLoading(true)
-
     dispatch(setTimerEndAction(false))
     clearValues(null, true)
     dispatch(setSelectionCounterAction(0))
     setTotalResult(0)
     setImageIndex(0)
     resetGame(true)
-    console.log('datafetched', dataFetched)
 
     toRememberImgArray.length !== 0 &&
       setTimeout(
@@ -282,7 +276,6 @@ export const Game = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerEnd])
-  console.log('timerend', timerEnd)
 
   return (
     <>

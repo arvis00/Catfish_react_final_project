@@ -13,4 +13,3 @@ export const getSecondsToRemember = state => state.timer.secondsToRemember
 export const getTimerEnd = state => state.timer.timerEnd
 export const getFlipCards = state => state.gameOptions.flipCards
 export const getSelectionCounter = state => state.gameOptions.selectionCounter
-// export const getIsLoading = state => state.timer.isLoading

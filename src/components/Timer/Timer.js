@@ -44,13 +44,9 @@ export const Timer = ({ className }) => {
   const timeLeft = () => {
     if (!timerEnd) {
       const time = secondsToRemember - timePassedAfterStart
-      console.log('time', time)
-      console.log('secondsToRemember', secondsToRemember)
-      console.log('timePassedAfterStart', timePassedAfterStart)
 
       if (time === 0) {
         dispatch(onTimesUp())
-        console.log('timesup')
       } else {
         return time
       }

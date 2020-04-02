@@ -1,7 +1,6 @@
 import React from 'react'
 import classes from './ContainerWithCards.module.scss'
 import {
-  getDataFetched,
   getToRememberImgArray,
   getSizeOfImg,
   getFlipCards,
@@ -9,15 +8,10 @@ import {
   getNumberOfImg
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  setToRememberImgArrayAction,
-  setDataFetchedAction
-} from '../../redux/actionCreators'
+import { setToRememberImgArrayAction } from '../../redux/actionCreators'
 import { setSelectionCounterAction } from '../../redux/actions'
-import { useEffect } from 'react'
 
 export const ContainerWithCards = () => {
-  const dataFetched = useSelector(getDataFetched)
   const toRememberImgArray = useSelector(getToRememberImgArray)
   const sizeOfImg = useSelector(getSizeOfImg)
   const flipCards = useSelector(getFlipCards)
@@ -25,6 +19,11 @@ export const ContainerWithCards = () => {
   const numberOfImg = useSelector(getNumberOfImg)
 
   const dispatch = useDispatch()
+
+  // const rowlength = Math.floor(
+  //   document.body.clientWidth / sizeOfImg
+  // )
+  // console.log('rowlength', rowlength)
 
   const selectAnswer = (image, index) => {
     const updatedArray = toRememberImgArray.map((storedImage, indexMap) => {
@@ -54,15 +53,11 @@ export const ContainerWithCards = () => {
     dispatch(setToRememberImgArrayAction(updatedArray))
   }
 
-  // useEffect(() => {
-  //   dispatch(setDataFetchedAction(true))
-  // }, [])
-
   return (
     <div className={classes.imgToRememberContainer}>
-      {/* {dataFetched && ( */}
       <ul className={classes.imageList}>
         {toRememberImgArray.map((image, index) => (
+          // {index===7&&<br>}
           <li key={index}>
             <div
               style={{ height: sizeOfImg + 'px' }}

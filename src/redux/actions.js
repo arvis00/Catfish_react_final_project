@@ -3,7 +3,6 @@ import {
   setToGuessImgArrayAction,
   setDataFetchedAction,
   setStartTimerAction
-  // setIsLoading
 } from './actionCreators'
 import shuffle from 'lodash.shuffle'
 import * as actionTypes from './actionTypes'
@@ -77,10 +76,8 @@ export const fetchImages = data => (dispatch, getState) => {
     dispatch(setDataFetchedAction(true))
 
     // saveInfo(toRememberShuffled, toGuessShuffled) // localstorage turned off/on
-    // dispatch(setIsLoading(false))
     return true
   } catch (error) {
-    // dispatch(setIsLoading(false))
     return false
   }
 }
@@ -93,12 +90,9 @@ export const stopTimer = () => {
 
 export const startTimerAfterStart = () => dispatch => {
   stopTimer()
-  // dispatch(setTimePassedAfterStartAction(0))
-  // dispatch(setTimePassedAfterFlipAction(0))
   time = 0
   time = setInterval(() => dispatch(setTimePassedAfterStartAction(1)), 1000)
   dispatch(setStartTimerAction(time))
-  console.log('startTimer')
 }
 
 export const startTimerAfterFlip = () => dispatch => {
