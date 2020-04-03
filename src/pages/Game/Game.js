@@ -11,9 +11,7 @@ import {
   getDataFetched,
   getTimerEnd,
   getFlipCards,
-  getSelectionCounter,
-  getNumberOfImg,
-  getGameMode
+  getSelectionCounter
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -53,6 +51,8 @@ export const Game = () => {
 
   const history = useHistory()
   const dispatch = useDispatch()
+
+  //negaliu perkelti funkciju i actions, nes visos kurios naudoja dispatch() taip pat naudoja kintamuosius is useState() (eilutes 38-41). Tai nzn ar verta siuos kintamuosius kelti i redux tik tam, kad persikeltu funkcijos i actions.
 
   const imageToGuessDisplayed = () => {
     return toGuessImgArray[imageIndex]
