@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import classes from './Game.module.scss'
-import { Slider } from '../../components/Slider/Slider'
-import { Button } from '../../components/Button/Button'
+import Slider from '../../components/Slider'
+import Button from '../../components/Button'
 import { Link } from 'react-router-dom'
 import {
   getToGuessImgArray,
@@ -11,7 +11,7 @@ import {
   getDataFetched,
   getTimerEnd,
   getFlipCards,
-  getSelectionCounter
+  getSelectionCounter,
 } from '../../redux/selectors'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -19,7 +19,7 @@ import {
   setToGuessImgArrayAction,
   setSizeOfImgAction,
   setTimerEndAction,
-  setFlipCards
+  setFlipCards,
 } from '../../redux/actionCreators'
 import { useHistory } from 'react-router-dom'
 import {
@@ -28,7 +28,7 @@ import {
   stopTimer,
   setSelectionCounterAction,
   setTimePassedAfterStartAction,
-  setTimePassedAfterFlipAction
+  setTimePassedAfterFlipAction,
 } from '../../redux/actions'
 import ContainerWithCards from '../../components/ContainerWithCards'
 import ContainerWithImageToFind from '../../components/ContainerWithImageToFind'
@@ -52,13 +52,11 @@ export const Game = () => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  //negaliu perkelti funkciju i actions, nes visos kurios naudoja dispatch() taip pat naudoja kintamuosius is useState() (eilutes 38-41). Tai nzn ar verta siuos kintamuosius kelti i redux tik tam, kad persikeltu funkcijos i actions.
-
   const imageToGuessDisplayed = () => {
     return toGuessImgArray[imageIndex]
   }
 
-  const makeTwoDigitTimer = n => (n < 10 ? '0' : '') + n
+  const makeTwoDigitTimer = (n) => (n < 10 ? '0' : '') + n
 
   const changeTimeFormat = () => {
     const minutes = Math.floor(timePassedAfterFlip / 60)
@@ -66,15 +64,15 @@ export const Game = () => {
     return `${makeTwoDigitTimer(minutes)}:${makeTwoDigitTimer(seconds)}`
   }
 
-  const nextImage = tempResult => {
+  const nextImage = (tempResult) => {
     if (tempResult === 2) {
       clearValues(2)
     } else {
       dispatch(setSelectionCounterAction(0))
-      const tempArray = toRememberImgArray.map(storedImage => {
+      const tempArray = toRememberImgArray.map((storedImage) => {
         return {
           ...storedImage,
-          selected: false
+          selected: false,
         }
       })
       dispatch(setToRememberImgArrayAction(tempArray))
@@ -83,21 +81,21 @@ export const Game = () => {
       imageIndex < toGuessImgArray.length - 1 &&
       !toGuessImgArray[imageIndex + 1].hidden
     ) {
-      setImageIndex(prev => prev + 1)
+      setImageIndex((prev) => prev + 1)
     } else if (
       imageIndex < toGuessImgArray.length - 1 &&
       toGuessImgArray[imageIndex + 1].hidden
     ) {
-      const result = toGuessImgArray.map(e => e.hidden)
+      const result = toGuessImgArray.map((e) => e.hidden)
       setImageIndex(() => result.indexOf(false, imageIndex + 1))
     } else if (!toGuessImgArray[0].hidden) {
       setImageIndex(0)
     } else {
-      const result = toGuessImgArray.map(e => e.hidden)
+      const result = toGuessImgArray.map((e) => e.hidden)
       setImageIndex(() => result.indexOf(false))
     }
     if (imageIndex === -1) {
-      const result = toGuessImgArray.map(e => e.hidden)
+      const result = toGuessImgArray.map((e) => e.hidden)
       setImageIndex(() => result.indexOf(false))
     }
   }
@@ -105,55 +103,55 @@ export const Game = () => {
   const clearValues = (tempResult, reset) => {
     if (reset) {
       dispatch(setSelectionCounterAction(0))
-      const tempArray = toRememberImgArray.map(storedImage => {
+      const tempArray = toRememberImgArray.map((storedImage) => {
         return {
           ...storedImage,
           selected: false,
-          guessed: false
+          guessed: false,
         }
       })
       dispatch(setToRememberImgArrayAction(tempArray))
     } else {
       if (tempResult === 2) {
-        const updatedGuessArray = toGuessImgArray.map(storedImage => {
+        const updatedGuessArray = toGuessImgArray.map((storedImage) => {
           if (storedImage.id === imageToGuessDisplayed().id) {
             return {
               ...storedImage,
-              hidden: true
+              hidden: true,
             }
           }
           return storedImage
         })
         dispatch(setToGuessImgArrayAction(updatedGuessArray))
-        const updatedRemArray = toRememberImgArray.map(storedImage => {
+        const updatedRemArray = toRememberImgArray.map((storedImage) => {
           if (storedImage.selected === true) {
             return {
               ...storedImage,
               guessed: true,
-              selected: false
+              selected: false,
             }
           }
           return {
             ...storedImage,
-            selected: false
+            selected: false,
           }
         })
         dispatch(setToRememberImgArrayAction(updatedRemArray))
-        setTotalResult(prev => prev + 2)
+        setTotalResult((prev) => prev + 2)
         dispatch(setSelectionCounterAction(0))
       } else {
         const itemsForMutating = {
           condition: ['selected', true],
-          change: ['guessed']
+          change: ['guessed'],
         }
         mutateImgArray(true, toRememberImgArray, itemsForMutating)
         setTimeout(() => {
           mutateImgArray(true, toRememberImgArray, itemsForMutating)
           dispatch(setSelectionCounterAction(0))
-          const tempArray = toRememberImgArray.map(storedImage => {
+          const tempArray = toRememberImgArray.map((storedImage) => {
             return {
               ...storedImage,
-              selected: false
+              selected: false,
             }
           })
           dispatch(setToRememberImgArrayAction(tempArray))
@@ -163,11 +161,11 @@ export const Game = () => {
   }
 
   const mutateImgArray = (needIf, array, { condition, change }) => {
-    const tempArray = array.map(storedImage => {
+    const tempArray = array.map((storedImage) => {
       if (needIf ? storedImage[condition[0]] === condition[1] : true) {
         return {
           ...storedImage,
-          [change[0]]: !storedImage[change[0]]
+          [change[0]]: !storedImage[change[0]],
         }
       }
       return storedImage
@@ -182,13 +180,13 @@ export const Game = () => {
   const failedAttempt = () => {
     clearValues()
     if (gameLives >= 0) {
-      setGameLives(gameLives => gameLives - 1)
+      setGameLives((gameLives) => gameLives - 1)
     }
   }
 
   const checkSelection = () => {
     let result = 0
-    toRememberImgArray.forEach(storedImage => {
+    toRememberImgArray.forEach((storedImage) => {
       if (
         storedImage.selected &&
         storedImage.id === imageToGuessDisplayed().id
@@ -199,19 +197,19 @@ export const Game = () => {
     result === 2 ? nextImage(2) : failedAttempt()
   }
 
-  const resetGame = firstRender => {
+  const resetGame = (firstRender) => {
     dispatch(setTimerEndAction(false))
-    const tempArray = toRememberImgArray.map(storedImage => {
+    const tempArray = toRememberImgArray.map((storedImage) => {
       return {
         ...storedImage,
-        guessed: false
+        guessed: false,
       }
     })
     dispatch(setToRememberImgArrayAction(tempArray))
-    const updatedGuessArray = toGuessImgArray.map(storedImage => {
+    const updatedGuessArray = toGuessImgArray.map((storedImage) => {
       return {
         ...storedImage,
-        hidden: false
+        hidden: false,
       }
     })
     dispatch(setToGuessImgArrayAction(updatedGuessArray))
@@ -289,7 +287,9 @@ export const Game = () => {
             step="1"
             value={sizeOfImg}
             padding="0 10px"
-            onChange={event => dispatch(setSizeOfImgAction(event.target.value))}
+            onChange={(event) =>
+              dispatch(setSizeOfImgAction(event.target.value))
+            }
           >
             Change size of cards:
           </Slider>
@@ -312,8 +312,9 @@ export const Game = () => {
               />
 
               <div
-                className={`${classes.buttonContainer} ${flipCards &&
-                  classes.showBtn} ${!flipCards && classes.hideBtn}`}
+                className={`${classes.buttonContainer} ${
+                  flipCards && classes.showBtn
+                } ${!flipCards && classes.hideBtn}`}
               >
                 <div className={classes.nextContainer}>
                   {selectionCounter !== 2 && (

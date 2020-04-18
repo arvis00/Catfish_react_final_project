@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import classes from './Results.module.scss'
 import { fetchImages } from '../../redux/actions'
 import { Link } from 'react-router-dom'
-import { Button } from '../../components/Button/Button'
+import Button from '../../components/Button'
 import {
   getTimePassedAfterFlip,
   getGameMode,
   getNumberOfImg,
-  getSearchValue
+  getSearchValue,
 } from '../../redux/selectors'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
@@ -22,7 +22,7 @@ export const Results = () => {
   const searchValue = useSelector(getSearchValue)
   const dispatch = useDispatch()
 
-  const makeTwoDigitTimer = n => (n < 10 ? '0' : '') + n
+  const makeTwoDigitTimer = (n) => (n < 10 ? '0' : '') + n
 
   const clickAction = async () => {
     if (gameMode === 'search') {

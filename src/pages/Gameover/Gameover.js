@@ -1,13 +1,13 @@
 import React from 'react'
 import classes from './Gameover.module.scss'
-import { Button } from '../../components/Button/Button'
+import Button from '../../components/Button'
 import { Link } from 'react-router-dom'
 import { fetchImages } from '../../redux/actions'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import {
   setTimerEndAction,
-  setDataFetchedAction
+  setDataFetchedAction,
 } from '../../redux/actionCreators'
 
 export const Gameover = () => {

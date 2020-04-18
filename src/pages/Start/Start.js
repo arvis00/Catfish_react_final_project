@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import classes from './Start.module.scss'
-import { Box } from '../../components/Box/Box'
-import { Button } from '../../components/Button/Button'
-import { Slider } from '../../components/Slider/Slider'
+import Box from '../../components/Box'
+import Button from '../../components/Button'
+import Slider from '../../components/Slider'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   getNumberOfImg,
   getSearchValue,
-  getSecondsToRemember
+  getSecondsToRemember,
 } from '../../redux/selectors'
 import {
   setNumberOfImgAction,
@@ -17,7 +17,7 @@ import {
   setToRememberImgArrayAction,
   setToGuessImgArrayAction,
   setDataFetchedAction,
-  setTimerEndAction
+  setTimerEndAction,
 } from '../../redux/actionCreators'
 import { fetchImages } from '../../redux/actions'
 import { getRandomPhotos, getSearchedPhotos } from '../../api'
@@ -33,7 +33,7 @@ export const Start = () => {
   const searchValue = useSelector(getSearchValue)
   const secondsToRemember = useSelector(getSecondsToRemember)
 
-  const onInput = event => {
+  const onInput = (event) => {
     setValue(event.target.value)
     setErrorMsg(false)
     dispatch(setSearchValueAction(event.target.value))
@@ -44,10 +44,10 @@ export const Start = () => {
       const data = JSON.parse(localStorage.getItem('toRememberImg'))
       dispatch(setToRememberImgArrayAction(data))
       const result = JSON.parse(localStorage.getItem('toGuessImg')).map(
-        storedImage => {
+        (storedImage) => {
           return {
             ...storedImage,
-            hidden: false
+            hidden: false,
           }
         }
       )
@@ -60,7 +60,7 @@ export const Start = () => {
     history.push('/game')
   }
 
-  const onClickSearch = async event => {
+  const onClickSearch = async (event) => {
     event.preventDefault()
     if (value) {
       const result = await getSearchedPhotos(numberOfImg, searchValue)
@@ -147,7 +147,7 @@ export const Start = () => {
             step="2"
             value={numberOfImg}
             classNameText={classes.settingsText}
-            onChange={event =>
+            onChange={(event) =>
               dispatch(setNumberOfImgAction(event.target.value))
             }
           >
@@ -160,7 +160,7 @@ export const Start = () => {
             step="1"
             value={secondsToRemember}
             classNameText={classes.settingsText}
-            onChange={event =>
+            onChange={(event) =>
               dispatch(setSecondsToRememberAction(event.target.value))
             }
           >
