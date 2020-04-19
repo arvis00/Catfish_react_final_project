@@ -1,4 +1,6 @@
-To run the app:
+Deployed website: https://arvis00.github.io/Catfish_react_final_project/
+
+Alternative way to run the app:
 - download repo
 - yarn install
 - yarn start
