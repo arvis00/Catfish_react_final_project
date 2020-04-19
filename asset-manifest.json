@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Catfish_react_final_project/static/css/main.15f03719.chunk.css",
-    "main.js": "/Catfish_react_final_project/static/js/main.00110a4e.chunk.js",
-    "main.js.map": "/Catfish_react_final_project/static/js/main.00110a4e.chunk.js.map",
+    "main.js": "/Catfish_react_final_project/static/js/main.cf0f738b.chunk.js",
+    "main.js.map": "/Catfish_react_final_project/static/js/main.cf0f738b.chunk.js.map",
     "runtime-main.js": "/Catfish_react_final_project/static/js/runtime-main.c8b69a07.js",
     "runtime-main.js.map": "/Catfish_react_final_project/static/js/runtime-main.c8b69a07.js.map",
     "static/css/2.f87e9f44.chunk.css": "/Catfish_react_final_project/static/css/2.f87e9f44.chunk.css",
     "static/js/2.fd9f6ca5.chunk.js": "/Catfish_react_final_project/static/js/2.fd9f6ca5.chunk.js",
     "static/js/2.fd9f6ca5.chunk.js.map": "/Catfish_react_final_project/static/js/2.fd9f6ca5.chunk.js.map",
     "index.html": "/Catfish_react_final_project/index.html",
-    "precache-manifest.bb0d87a4e7c3fa9d5ea10c100204044a.js": "/Catfish_react_final_project/precache-manifest.bb0d87a4e7c3fa9d5ea10c100204044a.js",
+    "precache-manifest.4d5da91ad79b83dbc0714330f1b70f97.js": "/Catfish_react_final_project/precache-manifest.4d5da91ad79b83dbc0714330f1b70f97.js",
     "service-worker.js": "/Catfish_react_final_project/service-worker.js",
     "static/css/2.f87e9f44.chunk.css.map": "/Catfish_react_final_project/static/css/2.f87e9f44.chunk.css.map",
     "static/css/main.15f03719.chunk.css.map": "/Catfish_react_final_project/static/css/main.15f03719.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.f87e9f44.chunk.css",
     "static/js/2.fd9f6ca5.chunk.js",
     "static/css/main.15f03719.chunk.css",
-    "static/js/main.00110a4e.chunk.js"
+    "static/js/main.cf0f738b.chunk.js"
   ]
 }

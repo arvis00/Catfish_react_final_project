@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1b5b38d4d1c81e05f3cf19b7c617302a",
+    "revision": "9aa5a1eb472d4fa225d56a7b2a4442ef",
     "url": "/Catfish_react_final_project/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Catfish_react_final_project/static/css/2.f87e9f44.chunk.css"
   },
   {
-    "revision": "485f9eea895802b025ca",
+    "revision": "25146f6f846bbc55e1b2",
     "url": "/Catfish_react_final_project/static/css/main.15f03719.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Catfish_react_final_project/static/js/2.fd9f6ca5.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "485f9eea895802b025ca",
-    "url": "/Catfish_react_final_project/static/js/main.00110a4e.chunk.js"
+    "revision": "25146f6f846bbc55e1b2",
+    "url": "/Catfish_react_final_project/static/js/main.cf0f738b.chunk.js"
   },
   {
     "revision": "e2055b2a624857409c52",
