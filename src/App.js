@@ -5,7 +5,7 @@ import { routes } from './routes'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={window.location.pathname || ''}>
       <main>
         <Switch>
           {routes.map((route, index) => (
