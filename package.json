@@ -2,7 +2,7 @@
   "name": "catfish_react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://arvis00.github.io/Catfish_react_final_project",
+  "homepage": "https://arvis00.github.io/Catfish_react_final_project/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
