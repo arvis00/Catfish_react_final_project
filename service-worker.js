@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Catfish_react_final_project/precache-manifest.4eb61852cfd73dae3321006dedcbacb6.js"
+  "/Catfish_react_final_project/precache-manifest.bb0d87a4e7c3fa9d5ea10c100204044a.js"
 );
 
 self.addEventListener('message', (event) => {
